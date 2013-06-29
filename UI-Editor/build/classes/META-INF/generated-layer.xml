@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN"
+                            "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="xml">
+        <folder name="entities">
+            <folder name="org_bisanti_uieditor">
+                <file name="UIEditor" url="nbres:/org/netbeans/modules/settings/resources/properties-1_0.dtd">
+                    <!--org.bisanti.uieditor.UIEditorTopComponent-->
+                    <attr name="hint.originalPublicID" stringvalue="-//org.bisanti.uieditor//UIEditor//EN"/>
+                </file>
+            </folder>
+        </folder>
+        <folder name="memory">
+            <folder name="org">
+                <folder name="bisanti">
+                    <folder name="uieditor">
+                        <file name="UIEditorTopComponent">
+                            <!--org.bisanti.uieditor.UIEditorTopComponent-->
+                            <attr name="settings.providerPath" stringvalue="xml/lookups//org_bisanti_uieditor/UIEditor.instance"/>
+                        </file>
+                    </folder>
+                </folder>
+            </folder>
+        </folder>
+        <folder name="lookups">
+            <folder name="org_bisanti_uieditor">
+                <file name="UIEditor.instance">
+                    <!--org.bisanti.uieditor.UIEditorTopComponent-->
+                    <attr
+                        methodvalue="org.netbeans.api.settings.Factory.create" name="instanceCreate"/>
+                    <attr
+                        methodvalue="org.netbeans.api.settings.Factory.properties" name="settings.convertor"/>
+                    <attr name="settings.instanceClass" stringvalue="org.bisanti.uieditor.UIEditorTopComponent"/>
+                    <attr name="settings.instanceOf" stringvalue="org.bisanti.uieditor.UIEditorTopComponent"/>
+                    <attr boolvalue="true" name="xmlproperties.preventStoring"/>
+                </file>
+            </folder>
+        </folder>
+    </folder>
+    <folder name="Menu">
+        <folder name="Window">
+            <file name="org-bisanti-uieditor-UIEditorTopComponent.shadow">
+                <!--org.bisanti.uieditor.UIEditorTopComponent-->
+                <attr name="originalFile" stringvalue="Actions/Window/org-bisanti-uieditor-UIEditorTopComponent.instance"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Windows2">
+        <folder name="Components">
+            <file name="UIEditorTopComponent.settings">
+                <!--org.bisanti.uieditor.UIEditorTopComponent--><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE settings PUBLIC "-//NetBeans//DTD Session settings 1.0//EN" "http://www.netbeans.org/dtds/sessionsettings-1_0.dtd">
+<settings version="1.0">
+  <instance class="org.bisanti.uieditor.UIEditorTopComponent"/>
+</settings>
+]]></file>
+        </folder>
+        <folder name="Modes">
+            <folder name="editor">
+                <file name="UIEditorTopComponent.wstcref">
+                    <!--org.bisanti.uieditor.UIEditorTopComponent--><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tc-ref PUBLIC "-//NetBeans//DTD Top Component in Mode Properties 2.0//EN" "http://www.netbeans.org/dtds/tc-ref2_0.dtd">
+<tc-ref version="2.0">
+  <tc-id id="UIEditorTopComponent"/>
+  <state opened="true"/>
+</tc-ref>
+]]></file>
+            </folder>
+        </folder>
+    </folder>
+    <folder name="Actions">
+        <folder name="Window">
+            <file name="org-bisanti-uieditor-UIEditorTopComponent.instance">
+                <!--org.bisanti.uieditor.UIEditorTopComponent-->
+                <attr
+                    methodvalue="org.openide.windows.TopComponent.openAction" name="instanceCreate"/>
+                <attr name="component" newvalue="org.bisanti.uieditor.UIEditorTopComponent"/>
+                <attr name="preferredID" stringvalue="UIEditorTopComponent"/>
+                <attr
+                    bundlevalue="org.bisanti.uieditor.Bundle#CTL_UIEditorAction" name="displayName"/>
+            </file>
+        </folder>
+    </folder>
+</filesystem>
