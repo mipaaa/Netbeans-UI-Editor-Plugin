@@ -4,11 +4,24 @@
  */
 package org.bisanti.uieditor;
 
+import java.awt.event.ItemEvent;
+import java.util.Map;
+import java.util.TreeMap;
+import javax.swing.LookAndFeel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.plaf.metal.DefaultMetalTheme;
+import javax.swing.plaf.metal.MetalLookAndFeel;
+import javax.swing.plaf.metal.OceanTheme;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.util.Exceptions;
+import org.openide.windows.WindowManager;
 
 /**
  * Top component which displays something.
@@ -25,13 +38,61 @@ persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 preferredID = "UIEditorTopComponent")
 public final class UIEditorTopComponent extends TopComponent
 {
+    private final Map<String, String> installedLafs =
+            new TreeMap<String, String>();
+    
+    private final String STEEL_THEME = "Steel";
+    
+    private final String OCEAN_THEME = "Ocean";
 
     public UIEditorTopComponent()
     {
+        for(LookAndFeelInfo lafi: UIManager.getInstalledLookAndFeels())
+        {
+            this.installedLafs.put(lafi.getName(), lafi.getClassName());
+        }
         initComponents();
         setName(NbBundle.getMessage(UIEditorTopComponent.class, "CTL_UIEditorTopComponent"));
         setToolTipText(NbBundle.getMessage(UIEditorTopComponent.class, "HINT_UIEditorTopComponent"));
+        this.updateLafDescription();
+        this.lafComboBox.setSelectedItem(UIManager.getLookAndFeel().getName());
+        setName(NbBundle.getMessage(UIEditorTopComponent.class, "CTL_UIEditorTopComponent"));
+        setToolTipText(NbBundle.getMessage(UIEditorTopComponent.class, "HINT_UIEditorTopComponent"));
 
+    }
+    
+    private void updateLafDescription()
+    {
+        LookAndFeel laf = UIManager.getLookAndFeel();
+        this.lafDescription.setText(laf.getID() + " (" + laf.getDescription() + ")");
+    }
+    
+    private void applyLaf()
+    {
+        try
+        {
+            String selection = this.lafComboBox.getSelectedItem().toString();
+            if (selection.contains("Metal"))
+            {
+                String theme = this.themeComboBox.getSelectedItem().toString();
+                if (STEEL_THEME.equals(theme))
+                {
+                    MetalLookAndFeel.setCurrentTheme(new DefaultMetalTheme());
+                } else
+                {
+                    if (OCEAN_THEME.equals(theme))
+                    {
+                        MetalLookAndFeel.setCurrentTheme(new OceanTheme());
+                    }
+                }
+            }
+            UIManager.setLookAndFeel(this.installedLafs.get(selection));
+            this.updateLafDescription();
+        } 
+        catch (Exception ex)
+        {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
     /** This method is called from within the constructor to
@@ -42,19 +103,103 @@ public final class UIEditorTopComponent extends TopComponent
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        lafComboBox = new javax.swing.JComboBox();
+        themeLabel = new javax.swing.JLabel();
+        themeComboBox = new javax.swing.JComboBox();
+        jLabel2 = new javax.swing.JLabel();
+        lafDescription = new javax.swing.JLabel();
+        setLafButton = new javax.swing.JButton();
+
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(UIEditorTopComponent.class, "UIEditorTopComponent.jLabel1.text")); // NOI18N
+
+        lafComboBox.setModel(new javax.swing.DefaultComboBoxModel(this.installedLafs.keySet().toArray(new String[0])));
+        lafComboBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                lafComboBoxItemStateChanged(evt);
+            }
+        });
+
+        org.openide.awt.Mnemonics.setLocalizedText(themeLabel, org.openide.util.NbBundle.getMessage(UIEditorTopComponent.class, "UIEditorTopComponent.themeLabel.text")); // NOI18N
+
+        themeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { STEEL_THEME, OCEAN_THEME}));
+
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(UIEditorTopComponent.class, "UIEditorTopComponent.jLabel2.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(lafDescription, org.openide.util.NbBundle.getMessage(UIEditorTopComponent.class, "UIEditorTopComponent.lafDescription.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(setLafButton, org.openide.util.NbBundle.getMessage(UIEditorTopComponent.class, "UIEditorTopComponent.setLafButton.text")); // NOI18N
+        setLafButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setLafButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lafComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(themeLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(themeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(setLafButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lafDescription)))
+                .addContainerGap(98, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(lafComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(themeLabel)
+                    .addComponent(themeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(setLafButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(lafDescription))
+                .addContainerGap(246, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void lafComboBoxItemStateChanged(java.awt.event.ItemEvent evt)//GEN-FIRST:event_lafComboBoxItemStateChanged
+    {//GEN-HEADEREND:event_lafComboBoxItemStateChanged
+        if(evt.getStateChange() == ItemEvent.SELECTED)
+        {
+            boolean visible = this.lafComboBox.getSelectedItem().toString().contains("Metal");
+            this.themeComboBox.setVisible(visible);
+            this.themeLabel.setVisible(visible);
+        }
+    }//GEN-LAST:event_lafComboBoxItemStateChanged
+
+    private void setLafButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_setLafButtonActionPerformed
+    {//GEN-HEADEREND:event_setLafButtonActionPerformed
+        this.applyLaf();
+        SwingUtilities.updateComponentTreeUI(WindowManager.getDefault().getMainWindow());
+    }//GEN-LAST:event_setLafButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JComboBox lafComboBox;
+    private javax.swing.JLabel lafDescription;
+    private javax.swing.JButton setLafButton;
+    private javax.swing.JComboBox themeComboBox;
+    private javax.swing.JLabel themeLabel;
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened()
