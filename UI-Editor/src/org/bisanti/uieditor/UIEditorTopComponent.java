@@ -7,6 +7,7 @@ package org.bisanti.uieditor;
 import java.awt.event.ItemEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,10 +24,13 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.metal.DefaultMetalTheme;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.plaf.metal.OceanTheme;
+import org.bisanti.util.FileUtil;
 import org.bisanti.util.Util;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.netbeans.api.settings.ConvertAsProperties;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.explorer.ExplorerManager;
@@ -57,6 +61,9 @@ public final class UIEditorTopComponent extends TopComponent implements
     
     private final String OCEAN_THEME = "Ocean";
     
+    private final File FILE = 
+            new File(FileUtil.MAIN_DIR + File.separator + "ui_editor.defaults");
+    
     private final ExplorerManager manager = new ExplorerManager();
     
     private final Set<UIProperty> changed = new HashSet<UIProperty>();
@@ -68,6 +75,7 @@ public final class UIEditorTopComponent extends TopComponent implements
             this.installedLafs.put(lafi.getName(), lafi.getClassName());
         }
         initComponents();
+        this.deleteButton.setEnabled(this.FILE.exists());
         this.outlineView1.getOutline().setRootVisible(false);
         setName(NbBundle.getMessage(UIEditorTopComponent.class, "CTL_UIEditorTopComponent"));
         setToolTipText(NbBundle.getMessage(UIEditorTopComponent.class, "HINT_UIEditorTopComponent"));
@@ -115,7 +123,7 @@ public final class UIEditorTopComponent extends TopComponent implements
     private void refreshProperties()
     {
         SortedMap<String, Collection<UIProperty>> nodes = 
-                new TreeMap<String, Collection<UIProperty>>();
+                new TreeMap<String, Collection<UIProperty>>(String.CASE_INSENSITIVE_ORDER);
         
         LookAndFeel laf = UIManager.getLookAndFeel();
         for(Map.Entry entry: laf.getDefaults().entrySet())
@@ -136,7 +144,7 @@ public final class UIEditorTopComponent extends TopComponent implements
             }
             else
             {
-                final String misc = "Misc.";
+                final String misc = "* Miscellaneous";
                 kids = nodes.get(misc);
                 if(kids == null)
                 {
@@ -180,6 +188,8 @@ public final class UIEditorTopComponent extends TopComponent implements
         jSeparator1 = new javax.swing.JSeparator();
         outlineView1 = new org.openide.explorer.view.OutlineView("Property");
         applyPropsButton = new javax.swing.JButton();
+        saveButton = new javax.swing.JButton();
+        deleteButton = new javax.swing.JButton();
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(UIEditorTopComponent.class, "UIEditorTopComponent.jLabel1.text")); // NOI18N
 
@@ -192,7 +202,7 @@ public final class UIEditorTopComponent extends TopComponent implements
 
         org.openide.awt.Mnemonics.setLocalizedText(themeLabel, org.openide.util.NbBundle.getMessage(UIEditorTopComponent.class, "UIEditorTopComponent.themeLabel.text")); // NOI18N
 
-        themeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { STEEL_THEME, OCEAN_THEME}));
+        themeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { OCEAN_THEME, STEEL_THEME}));
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(UIEditorTopComponent.class, "UIEditorTopComponent.jLabel2.text")); // NOI18N
 
@@ -212,16 +222,25 @@ public final class UIEditorTopComponent extends TopComponent implements
             }
         });
 
+        org.openide.awt.Mnemonics.setLocalizedText(saveButton, org.openide.util.NbBundle.getMessage(UIEditorTopComponent.class, "UIEditorTopComponent.saveButton.text")); // NOI18N
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveButtonActionPerformed(evt);
+            }
+        });
+
+        org.openide.awt.Mnemonics.setLocalizedText(deleteButton, org.openide.util.NbBundle.getMessage(UIEditorTopComponent.class, "UIEditorTopComponent.deleteButton.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(outlineView1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(outlineView1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lafComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -231,11 +250,16 @@ public final class UIEditorTopComponent extends TopComponent implements
                         .addComponent(themeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(setLafButton))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lafDescription))
-                    .addComponent(applyPropsButton, javax.swing.GroupLayout.Alignment.LEADING))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(saveButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(deleteButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 83, Short.MAX_VALUE)
+                        .addComponent(applyPropsButton)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -255,7 +279,10 @@ public final class UIEditorTopComponent extends TopComponent implements
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(applyPropsButton)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(applyPropsButton)
+                    .addComponent(saveButton)
+                    .addComponent(deleteButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(outlineView1, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
                 .addContainerGap())
@@ -281,24 +308,38 @@ public final class UIEditorTopComponent extends TopComponent implements
 
     private void applyPropsButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_applyPropsButtonActionPerformed
     {//GEN-HEADEREND:event_applyPropsButtonActionPerformed
-//        this.applyLaf();
-//        LookAndFeel laf = UIManager.getLookAndFeel();
         for(UIProperty prop: this.changed)
         {
-//            laf.getDefaults().put(prop.getName(), prop.getValue());
             UIManager.getDefaults().put(prop.getName(), prop.getValue());
         }
         SwingUtilities.updateComponentTreeUI(WindowManager.getDefault().getMainWindow());        
     }//GEN-LAST:event_applyPropsButtonActionPerformed
 
+    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_saveButtonActionPerformed
+    {//GEN-HEADEREND:event_saveButtonActionPerformed
+        DialogDescriptor confirm = new DialogDescriptor("This will set your current UI settings as the default and erase any previously saved settings. Are you sure you want to continue?", "Confirm Save");
+        confirm.setMessageType(DialogDescriptor.WARNING_MESSAGE);
+        if(DialogDisplayer.getDefault().notify(confirm) == DialogDescriptor.OK_OPTION)
+        {
+            if(this.FILE.exists())
+            {
+                this.FILE.delete();
+            }
+            
+            
+        }
+    }//GEN-LAST:event_saveButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton applyPropsButton;
+    private javax.swing.JButton deleteButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JComboBox lafComboBox;
     private javax.swing.JLabel lafDescription;
     private org.openide.explorer.view.OutlineView outlineView1;
+    private javax.swing.JButton saveButton;
     private javax.swing.JButton setLafButton;
     private javax.swing.JComboBox themeComboBox;
     private javax.swing.JLabel themeLabel;

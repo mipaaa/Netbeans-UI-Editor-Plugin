@@ -27,11 +27,16 @@ public class UINode extends AbstractNode
     
     private UIProperty prop;
     
+    private final Object originalValue;
+    
+    private boolean original = true;
+    
     public UINode(UIProperty prop)
     {
         super(Children.LEAF);
         super.setName(prop.getName().toString());
         this.prop = prop;
+        this.originalValue = prop.getValue();
     }
     
     public static boolean hasEditor(Class type)
@@ -79,76 +84,31 @@ public class UINode extends AbstractNode
         return ped != null && !ped.getClass().getName().contains("ObjectEditor");
     }
     
-    private Property create(final Object value, Class c)
-    {
-        if(Boolean.class.isAssignableFrom(c))
-        {
-            return new PropertySupport.ReadWrite<Boolean>(VALUE_PROP, Boolean.class, VALUE_DISPLAY, "")
-            {
-                @Override
-                public Boolean getValue() throws IllegalAccessException, InvocationTargetException
-                {
-                    return (Boolean) prop.getValue();
-                }
-
-                @Override
-                public void setValue(Boolean t) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
-                {                    
-                    if(!Util.equal(prop.getValue(), t))
-                    {
-                        prop.setValue(t);
-                        UINode.this.firePropertyChange(VALUE_PROP, null, prop);
-                    }                    
-                }
-            };
-        }
-        if(Color.class.isAssignableFrom(c))
-        {
-            return new PropertySupport.ReadWrite<Color>(VALUE_PROP, Color.class, VALUE_DISPLAY, "")
-            {
-                @Override
-                public Color getValue() throws IllegalAccessException, InvocationTargetException
-                {
-                    return (Color) prop.getValue();
-                }
-
-                @Override
-                public void setValue(Color t) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
-                {
-                    
-                    if(value instanceof ColorUIResource)
-                    {
-                        t = new ColorUIResource(t);
-                    }
-                    
-                    if(!Util.equal(prop.getValue(), t))
-                    {
-                        prop.setValue(t);
-                        UINode.this.firePropertyChange(VALUE_PROP, null, prop);
-                    }
-                    
-                }
-            };
-        }
-        else
-        {
-            final String val = c.getName() + ": " + value;
-            return new PropertySupport.ReadOnly<String>(VALUE_PROP, String.class, VALUE_DISPLAY, "")
-            {
-                @Override
-                public String getValue() throws IllegalAccessException, InvocationTargetException
-                {
-                   return val;
-                }
-            };
-        }
-    }
-    
     protected Property[] createProperties()
     {
         Object value = this.prop.getValue();
         Class c = value.getClass();
-        return new Property[]{this.create(value, c)};
+        Property p;
+        
+        Pair<PropertyEditor, Class> pair = findEditor(c);
+        if(pair != null && validEditor(pair.getFirst()))
+        {
+            p =  new EditorProp(pair.getSecond(), true);
+        }
+        else
+        {
+            final String val = c.getName() + ": " + value;
+            p = new EditorProp<String>(String.class, false)
+            {
+                @Override
+                public String getValue() throws IllegalAccessException, InvocationTargetException
+                {
+                    return val;
+                }                                           
+            };
+        }
+        
+        return new Property[]{p};
     }
     
     @Override
@@ -165,5 +125,58 @@ public class UINode extends AbstractNode
         }
 
         return sheet;
+    }
+
+    @Override
+    public String getHtmlDisplayName()
+    {
+        return this.original ? null : "<b>" + this.getDisplayName();
+    }
+    
+    private class EditorProp<T> extends PropertySupport.ReadWrite<T>
+    {
+        private final boolean editable;
+        
+        EditorProp(Class<T> clazz, boolean editable)
+        {
+            super(VALUE_PROP, clazz, VALUE_DISPLAY, "");
+            this.editable = editable;
+        }
+
+        @Override
+        public boolean canWrite()
+        {
+            return this.editable;
+        }
+
+        @Override
+        public T getValue() throws IllegalAccessException, InvocationTargetException
+        {
+            return (T) prop.getValue();
+        }
+
+        @Override
+        public void setValue(T t) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
+        {
+            if(!Util.equal(prop.getValue(), t))
+            {
+                this.set(t);
+                original = Util.equal(originalValue, t);
+                UINode.this.firePropertyChange(VALUE_PROP, null, prop);
+            }
+        }
+        
+        void set(Object newValue)
+        {
+            Object value = prop.getValue();
+            if (value instanceof ColorUIResource)
+            {
+                prop.setValue(new ColorUIResource((Color) newValue));
+            }
+            else
+            {
+                prop.setValue(newValue);
+            }
+        }
     }
 }
