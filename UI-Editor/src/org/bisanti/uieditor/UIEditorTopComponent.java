@@ -21,6 +21,7 @@ import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.metal.DefaultMetalTheme;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.plaf.metal.OceanTheme;
@@ -67,6 +68,10 @@ public final class UIEditorTopComponent extends TopComponent implements
     private final ExplorerManager manager = new ExplorerManager();
     
     private final Set<UIProperty> changed = new HashSet<UIProperty>();
+    
+    private final Map JAVA_DEFAULTS = UIManager.getDefaults();
+    
+    private final LookAndFeel DEFAULT_LAF = UIManager.getLookAndFeel();
 
     public UIEditorTopComponent()
     {
@@ -121,7 +126,7 @@ public final class UIEditorTopComponent extends TopComponent implements
     }
     
     private void refreshProperties()
-    {
+    {        
         SortedMap<String, Collection<UIProperty>> nodes = 
                 new TreeMap<String, Collection<UIProperty>>(String.CASE_INSENSITIVE_ORDER);
         
@@ -144,7 +149,7 @@ public final class UIEditorTopComponent extends TopComponent implements
             }
             else
             {
-                final String misc = "* Miscellaneous";
+                final String misc = "~Miscellaneous";
                 kids = nodes.get(misc);
                 if(kids == null)
                 {
@@ -152,7 +157,8 @@ public final class UIEditorTopComponent extends TopComponent implements
                     nodes.put(misc, kids);
                 }              
             }
-            kids.add(new UIProperty(entry));
+            UIProperty prop = new UIProperty(entry);
+            kids.add(prop);
         }
         
         for(Collection list: nodes.values())
@@ -168,6 +174,15 @@ public final class UIEditorTopComponent extends TopComponent implements
             this.outlineView1.addPropertyColumn(col.getName(), col.getDisplayName(), col.getShortDescription());
         }
         this.manager.setRootContext(root);
+    }
+    
+    private void apply(Collection<UIProperty> props)
+    {
+        for(UIProperty prop: props)
+        {
+            UIManager.getDefaults().put(prop.getName(), prop.getValue());
+        }
+        SwingUtilities.updateComponentTreeUI(WindowManager.getDefault().getMainWindow());
     }
 
     /** This method is called from within the constructor to
@@ -190,6 +205,7 @@ public final class UIEditorTopComponent extends TopComponent implements
         applyPropsButton = new javax.swing.JButton();
         saveButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
+        resetButton = new javax.swing.JButton();
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(UIEditorTopComponent.class, "UIEditorTopComponent.jLabel1.text")); // NOI18N
 
@@ -231,6 +247,13 @@ public final class UIEditorTopComponent extends TopComponent implements
 
         org.openide.awt.Mnemonics.setLocalizedText(deleteButton, org.openide.util.NbBundle.getMessage(UIEditorTopComponent.class, "UIEditorTopComponent.deleteButton.text")); // NOI18N
 
+        org.openide.awt.Mnemonics.setLocalizedText(resetButton, org.openide.util.NbBundle.getMessage(UIEditorTopComponent.class, "UIEditorTopComponent.resetButton.text")); // NOI18N
+        resetButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -238,8 +261,8 @@ public final class UIEditorTopComponent extends TopComponent implements
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(outlineView1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
+                    .addComponent(outlineView1, javax.swing.GroupLayout.DEFAULT_SIZE, 551, Short.MAX_VALUE)
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 551, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -249,17 +272,19 @@ public final class UIEditorTopComponent extends TopComponent implements
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(themeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(setLafButton))
+                        .addComponent(setLafButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 176, Short.MAX_VALUE)
+                        .addComponent(resetButton))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lafDescription))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(applyPropsButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 184, Short.MAX_VALUE)
                         .addComponent(saveButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(deleteButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 83, Short.MAX_VALUE)
-                        .addComponent(applyPropsButton)))
+                        .addComponent(deleteButton)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -271,7 +296,8 @@ public final class UIEditorTopComponent extends TopComponent implements
                     .addComponent(lafComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(themeLabel)
                     .addComponent(themeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(setLafButton))
+                    .addComponent(setLafButton)
+                    .addComponent(resetButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -280,9 +306,9 @@ public final class UIEditorTopComponent extends TopComponent implements
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(applyPropsButton)
+                    .addComponent(deleteButton)
                     .addComponent(saveButton)
-                    .addComponent(deleteButton))
+                    .addComponent(applyPropsButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(outlineView1, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
                 .addContainerGap())
@@ -308,11 +334,8 @@ public final class UIEditorTopComponent extends TopComponent implements
 
     private void applyPropsButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_applyPropsButtonActionPerformed
     {//GEN-HEADEREND:event_applyPropsButtonActionPerformed
-        for(UIProperty prop: this.changed)
-        {
-            UIManager.getDefaults().put(prop.getName(), prop.getValue());
-        }
-        SwingUtilities.updateComponentTreeUI(WindowManager.getDefault().getMainWindow());        
+        this.apply(this.changed);
+        this.changed.clear();
     }//GEN-LAST:event_applyPropsButtonActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_saveButtonActionPerformed
@@ -330,6 +353,27 @@ public final class UIEditorTopComponent extends TopComponent implements
         }
     }//GEN-LAST:event_saveButtonActionPerformed
 
+    private void resetButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_resetButtonActionPerformed
+    {//GEN-HEADEREND:event_resetButtonActionPerformed
+        DialogDescriptor confirm = new DialogDescriptor("This will undo all of your changes and reset the default Look And Feel and color scheme for this platform. Are you sure you want to continue?", "Reset?");
+        confirm.setMessageType(DialogDescriptor.WARNING_MESSAGE);
+        if(DialogDisplayer.getDefault().notify(confirm) == DialogDescriptor.OK_OPTION)
+        {
+            try
+            {
+                UIManager.setLookAndFeel(this.DEFAULT_LAF);
+                SwingUtilities.updateComponentTreeUI(WindowManager.getDefault().getMainWindow());
+                UIManager.getDefaults().putAll(this.JAVA_DEFAULTS);
+                SwingUtilities.updateComponentTreeUI(WindowManager.getDefault().getMainWindow());
+                this.refreshProperties();
+            } 
+            catch (UnsupportedLookAndFeelException ex)
+            {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+    }//GEN-LAST:event_resetButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton applyPropsButton;
     private javax.swing.JButton deleteButton;
@@ -339,6 +383,7 @@ public final class UIEditorTopComponent extends TopComponent implements
     private javax.swing.JComboBox lafComboBox;
     private javax.swing.JLabel lafDescription;
     private org.openide.explorer.view.OutlineView outlineView1;
+    private javax.swing.JButton resetButton;
     private javax.swing.JButton saveButton;
     private javax.swing.JButton setLafButton;
     private javax.swing.JComboBox themeComboBox;

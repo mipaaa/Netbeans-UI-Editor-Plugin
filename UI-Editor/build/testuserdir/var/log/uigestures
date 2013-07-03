@@ -579,3 +579,316 @@
   <catalog>&lt;null&gt;</catalog>
   <param>4294967295</param>
 </record>
+<record>
+  <date>2013-07-02T21:29:30</date>
+  <millis>1372822170986</millis>
+  <sequence>6</sequence>
+  <level>FINEST</level>
+  <thread>14</thread>
+  <message>CPU INFO</message>
+  <param>4</param>
+</record>
+<record>
+  <date>2013-07-02T21:29:30</date>
+  <millis>1372822170986</millis>
+  <sequence>7</sequence>
+  <level>FINEST</level>
+  <thread>14</thread>
+  <message>SCREEN SIZE</message>
+  <param>1920</param>
+  <param>1080</param>
+  <param>1</param>
+</record>
+<record>
+  <date>2013-07-02T21:29:30</date>
+  <millis>1372822170986</millis>
+  <sequence>8</sequence>
+  <level>CONFIG</level>
+  <thread>14</thread>
+  <message>IDE_STARTUP</message>
+</record>
+<record>
+  <date>2013-07-02T21:29:35</date>
+  <millis>1372822175261</millis>
+  <sequence>13</sequence>
+  <level>INFO</level>
+  <thread>28</thread>
+  <message>MEMORY</message>
+  <key>MEMORY</key>
+  <catalog>&lt;null&gt;</catalog>
+  <param>4294967295</param>
+</record>
+<record>
+  <date>2013-07-02T21:30:41</date>
+  <millis>1372822241133</millis>
+  <sequence>5</sequence>
+  <level>FINEST</level>
+  <thread>14</thread>
+  <message>CPU INFO</message>
+  <param>4</param>
+</record>
+<record>
+  <date>2013-07-02T21:30:41</date>
+  <millis>1372822241149</millis>
+  <sequence>6</sequence>
+  <level>FINEST</level>
+  <thread>14</thread>
+  <message>SCREEN SIZE</message>
+  <param>1920</param>
+  <param>1080</param>
+  <param>1</param>
+</record>
+<record>
+  <date>2013-07-02T21:30:41</date>
+  <millis>1372822241149</millis>
+  <sequence>7</sequence>
+  <level>CONFIG</level>
+  <thread>14</thread>
+  <message>IDE_STARTUP</message>
+</record>
+<record>
+  <date>2013-07-02T21:30:45</date>
+  <millis>1372822245501</millis>
+  <sequence>13</sequence>
+  <level>INFO</level>
+  <thread>13</thread>
+  <message>MEMORY</message>
+  <key>MEMORY</key>
+  <catalog>&lt;null&gt;</catalog>
+  <param>4294967295</param>
+</record>
+<record>
+  <date>2013-07-02T21:31:52</date>
+  <millis>1372822312542</millis>
+  <sequence>5</sequence>
+  <level>FINEST</level>
+  <thread>14</thread>
+  <message>CPU INFO</message>
+  <param>4</param>
+</record>
+<record>
+  <date>2013-07-02T21:31:52</date>
+  <millis>1372822312558</millis>
+  <sequence>6</sequence>
+  <level>FINEST</level>
+  <thread>14</thread>
+  <message>SCREEN SIZE</message>
+  <param>1920</param>
+  <param>1080</param>
+  <param>1</param>
+</record>
+<record>
+  <date>2013-07-02T21:31:52</date>
+  <millis>1372822312558</millis>
+  <sequence>7</sequence>
+  <level>CONFIG</level>
+  <thread>14</thread>
+  <message>IDE_STARTUP</message>
+</record>
+<record>
+  <date>2013-07-02T21:31:56</date>
+  <millis>1372822316958</millis>
+  <sequence>12</sequence>
+  <level>INFO</level>
+  <thread>27</thread>
+  <message>MEMORY</message>
+  <key>MEMORY</key>
+  <catalog>&lt;null&gt;</catalog>
+  <param>4294967295</param>
+</record>
+<record>
+  <date>2013-07-02T21:33:39</date>
+  <millis>1372822419207</millis>
+  <sequence>5</sequence>
+  <level>FINEST</level>
+  <thread>14</thread>
+  <message>CPU INFO</message>
+  <param>4</param>
+</record>
+<record>
+  <date>2013-07-02T21:33:39</date>
+  <millis>1372822419223</millis>
+  <sequence>6</sequence>
+  <level>FINEST</level>
+  <thread>14</thread>
+  <message>SCREEN SIZE</message>
+  <param>1920</param>
+  <param>1080</param>
+  <param>1</param>
+</record>
+<record>
+  <date>2013-07-02T21:33:39</date>
+  <millis>1372822419223</millis>
+  <sequence>7</sequence>
+  <level>CONFIG</level>
+  <thread>14</thread>
+  <message>IDE_STARTUP</message>
+</record>
+<record>
+  <date>2013-07-02T21:33:43</date>
+  <millis>1372822423466</millis>
+  <sequence>12</sequence>
+  <level>INFO</level>
+  <thread>13</thread>
+  <message>MEMORY</message>
+  <key>MEMORY</key>
+  <catalog>&lt;null&gt;</catalog>
+  <param>4294967295</param>
+</record>
+<record>
+  <date>2013-07-02T21:35:08</date>
+  <millis>1372822508731</millis>
+  <sequence>5</sequence>
+  <level>FINEST</level>
+  <thread>14</thread>
+  <message>CPU INFO</message>
+  <param>4</param>
+</record>
+<record>
+  <date>2013-07-02T21:35:08</date>
+  <millis>1372822508746</millis>
+  <sequence>6</sequence>
+  <level>FINEST</level>
+  <thread>14</thread>
+  <message>SCREEN SIZE</message>
+  <param>1920</param>
+  <param>1080</param>
+  <param>1</param>
+</record>
+<record>
+  <date>2013-07-02T21:35:08</date>
+  <millis>1372822508746</millis>
+  <sequence>7</sequence>
+  <level>CONFIG</level>
+  <thread>14</thread>
+  <message>IDE_STARTUP</message>
+</record>
+<record>
+  <date>2013-07-02T21:35:35</date>
+  <millis>1372822535377</millis>
+  <sequence>5</sequence>
+  <level>FINEST</level>
+  <thread>14</thread>
+  <message>CPU INFO</message>
+  <param>4</param>
+</record>
+<record>
+  <date>2013-07-02T21:35:35</date>
+  <millis>1372822535377</millis>
+  <sequence>6</sequence>
+  <level>FINEST</level>
+  <thread>14</thread>
+  <message>SCREEN SIZE</message>
+  <param>1920</param>
+  <param>1080</param>
+  <param>1</param>
+</record>
+<record>
+  <date>2013-07-02T21:35:35</date>
+  <millis>1372822535377</millis>
+  <sequence>7</sequence>
+  <level>CONFIG</level>
+  <thread>14</thread>
+  <message>IDE_STARTUP</message>
+</record>
+<record>
+  <date>2013-07-02T21:35:39</date>
+  <millis>1372822539729</millis>
+  <sequence>14</sequence>
+  <level>INFO</level>
+  <thread>27</thread>
+  <message>MEMORY</message>
+  <key>MEMORY</key>
+  <catalog>&lt;null&gt;</catalog>
+  <param>4294967295</param>
+</record>
+<record>
+  <date>2013-07-02T21:35:59</date>
+  <millis>1372822559121</millis>
+  <sequence>5</sequence>
+  <level>FINEST</level>
+  <thread>14</thread>
+  <message>CPU INFO</message>
+  <param>4</param>
+</record>
+<record>
+  <date>2013-07-02T21:35:59</date>
+  <millis>1372822559136</millis>
+  <sequence>6</sequence>
+  <level>FINEST</level>
+  <thread>14</thread>
+  <message>SCREEN SIZE</message>
+  <param>1920</param>
+  <param>1080</param>
+  <param>1</param>
+</record>
+<record>
+  <date>2013-07-02T21:35:59</date>
+  <millis>1372822559136</millis>
+  <sequence>7</sequence>
+  <level>CONFIG</level>
+  <thread>14</thread>
+  <message>IDE_STARTUP</message>
+</record>
+<record>
+  <date>2013-07-02T21:36:45</date>
+  <millis>1372822605456</millis>
+  <sequence>5</sequence>
+  <level>FINEST</level>
+  <thread>14</thread>
+  <message>CPU INFO</message>
+  <param>4</param>
+</record>
+<record>
+  <date>2013-07-02T21:36:45</date>
+  <millis>1372822605456</millis>
+  <sequence>6</sequence>
+  <level>FINEST</level>
+  <thread>14</thread>
+  <message>SCREEN SIZE</message>
+  <param>1920</param>
+  <param>1080</param>
+  <param>1</param>
+</record>
+<record>
+  <date>2013-07-02T21:36:45</date>
+  <millis>1372822605456</millis>
+  <sequence>7</sequence>
+  <level>CONFIG</level>
+  <thread>14</thread>
+  <message>IDE_STARTUP</message>
+</record>
+<record>
+  <date>2013-07-02T21:36:49</date>
+  <millis>1372822609761</millis>
+  <sequence>12</sequence>
+  <level>INFO</level>
+  <thread>26</thread>
+  <message>MEMORY</message>
+  <key>MEMORY</key>
+  <catalog>&lt;null&gt;</catalog>
+  <param>4294967295</param>
+</record>
+<record>
+  <date>2013-07-02T21:38:19</date>
+  <millis>1372822699555</millis>
+  <sequence>17</sequence>
+  <logger>org.netbeans.ui.focus</logger>
+  <level>FINE</level>
+  <thread>19</thread>
+  <message>LOG_WINDOW_DEACTIVATED</message>
+  <key>LOG_WINDOW_DEACTIVATED</key>
+  <catalog>org.netbeans.core.ui.warmup.Bundle</catalog>
+</record>
+<record>
+  <date>2013-07-02T21:38:32</date>
+  <millis>1372822712770</millis>
+  <sequence>18</sequence>
+  <logger>org.netbeans.ui.focus</logger>
+  <level>FINE</level>
+  <thread>26</thread>
+  <message>LOG_WINDOW_ACTIVATED</message>
+  <key>LOG_WINDOW_ACTIVATED</key>
+  <catalog>org.netbeans.core.ui.warmup.Bundle</catalog>
+  <param>141</param>
+</record>

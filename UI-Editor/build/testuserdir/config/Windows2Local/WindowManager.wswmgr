@@ -3,8 +3,8 @@
 <windowmanager version="2.1">
     <main-window>
   <joined-properties
-   x="96"
-   y="72"
+   x="178"
+   y="54"
    width="1309"
    height="936"
    relative-x="0.0"
