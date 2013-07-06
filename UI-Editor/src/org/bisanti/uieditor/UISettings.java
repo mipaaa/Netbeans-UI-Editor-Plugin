@@ -1,10 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.bisanti.uieditor;
 
-import java.util.Collection;
+import java.util.Set;
 import javax.swing.LookAndFeel;
 
 /**
@@ -14,32 +10,32 @@ import javax.swing.LookAndFeel;
  */
 public class UISettings implements java.io.Serializable
 {
-    private LookAndFeel laf;
+    private String lafName;
     
-    private Collection<UIProperty> properties;
+    private Set<UIProperty> properties;
 
-    public UISettings(LookAndFeel laf, Collection<UIProperty> properties)
+    public UISettings(String laf, Set<UIProperty> properties)
     {
-        this.laf = laf;
+        this.lafName = laf;
         this.properties = properties;
     }
 
-    public LookAndFeel getLaf()
+    public String getLafName()
     {
-        return laf;
+        return lafName;
     }
 
-    public void setLaf(LookAndFeel laf)
+    public void setLafName(String lafName)
     {
-        this.laf = laf;
+        this.lafName = lafName;
     }
 
-    public Collection<UIProperty> getProperties()
+    public Set<UIProperty> getProperties()
     {
         return properties;
     }
 
-    public void setProperties(Collection<UIProperty> properties)
+    public void setProperties(Set<UIProperty> properties)
     {
         this.properties = properties;
     }

@@ -11,12 +11,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -26,6 +27,7 @@ import javax.swing.plaf.metal.DefaultMetalTheme;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.plaf.metal.OceanTheme;
 import org.bisanti.util.FileUtil;
+import org.bisanti.util.StringUtil;
 import org.bisanti.util.Util;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -63,11 +65,13 @@ public final class UIEditorTopComponent extends TopComponent implements
     private final String OCEAN_THEME = "Ocean";
     
     private final File FILE = 
-            new File(FileUtil.MAIN_DIR + File.separator + "ui_editor.defaults");
+            new File(FileUtil.MAIN_DIR + File.separator + "ui_editor.uidefaults");
     
     private final ExplorerManager manager = new ExplorerManager();
     
-    private final Set<UIProperty> changed = new HashSet<UIProperty>();
+    private final Set<UIProperty> changed = new TreeSet<UIProperty>();
+    
+    private final Set<UIProperty> applied = new TreeSet<UIProperty>();
     
     private final Map JAVA_DEFAULTS = UIManager.getDefaults();
     
@@ -80,7 +84,26 @@ public final class UIEditorTopComponent extends TopComponent implements
             this.installedLafs.put(lafi.getName(), lafi.getClassName());
         }
         initComponents();
-        this.deleteButton.setEnabled(this.FILE.exists());
+        if(this.FILE.exists())
+        {
+            try
+            {
+                UISettings settings = FileUtil.readObjects(this.FILE, UISettings.class).get(0);
+                this.applyLaf(settings.getLafName());
+                this.apply(settings.getProperties());
+                SwingUtilities.updateComponentTreeUI(WindowManager.getDefault().getMainWindow());
+                this.deleteButton.setEnabled(true);
+            } 
+            catch (Exception ex)
+            {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        else
+        {
+            this.deleteButton.setEnabled(false);
+        }
+        
         this.outlineView1.getOutline().setRootVisible(false);
         setName(NbBundle.getMessage(UIEditorTopComponent.class, "CTL_UIEditorTopComponent"));
         setToolTipText(NbBundle.getMessage(UIEditorTopComponent.class, "HINT_UIEditorTopComponent"));
@@ -97,7 +120,7 @@ public final class UIEditorTopComponent extends TopComponent implements
         this.lafDescription.setText(laf.getID() + " (" + laf.getDescription() + ")");
     }
     
-    private void applyLaf()
+    private void applyLaf(String name)
     {
         try
         {
@@ -108,7 +131,8 @@ public final class UIEditorTopComponent extends TopComponent implements
                 if (STEEL_THEME.equals(theme))
                 {
                     MetalLookAndFeel.setCurrentTheme(new DefaultMetalTheme());
-                } else
+                }
+                else
                 {
                     if (OCEAN_THEME.equals(theme))
                     {
@@ -116,7 +140,7 @@ public final class UIEditorTopComponent extends TopComponent implements
                     }
                 }
             }
-            UIManager.setLookAndFeel(this.installedLafs.get(selection));
+            UIManager.setLookAndFeel(name);
             this.updateLafDescription();
         } 
         catch (Exception ex)
@@ -181,6 +205,7 @@ public final class UIEditorTopComponent extends TopComponent implements
         for(UIProperty prop: props)
         {
             UIManager.getDefaults().put(prop.getName(), prop.getValue());
+            this.applied.add(prop);
         }
         SwingUtilities.updateComponentTreeUI(WindowManager.getDefault().getMainWindow());
     }
@@ -327,7 +352,7 @@ public final class UIEditorTopComponent extends TopComponent implements
 
     private void setLafButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_setLafButtonActionPerformed
     {//GEN-HEADEREND:event_setLafButtonActionPerformed
-        this.applyLaf();
+        this.applyLaf(this.installedLafs.get(this.lafComboBox.getSelectedItem().toString()));
         SwingUtilities.updateComponentTreeUI(WindowManager.getDefault().getMainWindow());
         this.refreshProperties();
     }//GEN-LAST:event_setLafButtonActionPerformed
@@ -349,6 +374,41 @@ public final class UIEditorTopComponent extends TopComponent implements
                 this.FILE.delete();
             }
             
+            UISettings uis = new UISettings(UIManager.getLookAndFeel().getName(), this.applied);
+            Set<UIProperty> removed = new TreeSet<UIProperty>();
+
+            if (!FileUtil.isSerializable(this.applied))
+            {
+                Iterator<UIProperty> it = this.applied.iterator();
+                while (it.hasNext())
+                {
+                    UIProperty uip = it.next();
+                    if (!FileUtil.isSerializable(uip))
+                    {
+                        removed.add(uip);
+                        it.remove();
+                    }
+                }
+            }            
+            
+            try
+            {
+                this.FILE.createNewFile();
+                FileUtil.writeObjects(this.FILE, uis);
+                if (!removed.isEmpty())
+                {
+                    DialogDescriptor.Message message = new DialogDescriptor.Message("The following properties are not Serializable and could not be saved:\n\n" + StringUtil.toString(removed, "\n"));
+                    message.setTitle("Not All Properties Saved");
+                    message.setMessageType(DialogDescriptor.WARNING_MESSAGE);
+                    DialogDisplayer.getDefault().notify(message);
+                }
+            } catch (Exception ex)
+            {
+                DialogDescriptor.Message message = new DialogDescriptor.Message("Unable to save current settings:\n\n" + ex.getMessage());
+                message.setTitle("Error During Save");
+                message.setMessageType(DialogDescriptor.ERROR_MESSAGE);
+                DialogDisplayer.getDefault().notify(message);
+            }
             
         }
     }//GEN-LAST:event_saveButtonActionPerformed

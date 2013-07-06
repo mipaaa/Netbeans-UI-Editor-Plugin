@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
->Log Session: Tuesday, July 2, 2013 9:36:41 PM MDT
+>Log Session: Saturday, July 6, 2013 1:23:09 PM MDT
 >System Info: 
   Product Version         = NetBeans IDE 7.0.1 (Build 201107282000) (#370b28369872)
   Operating System        = Windows 7 version 6.1 running on x86
@@ -184,9 +184,9 @@ INFO [org.netbeans.core.startup.NbEvents]: Turning on modules:
 	org.netbeans.modules.j2ee.persistence [1.22.1.1 1 201107282000]
 	org.netbeans.modules.servletjspapi/1 [1.12.1.25 25 201107282000]
 	org.netbeans.libs.glassfish_logging/1 [1.12.1.20 20 201107282000]
-	org.netbeans.core.output2/1 [1.22.1 201107282000]
 	org.netbeans.lib.terminalemulator [1.16.1 201107282000]
 	org.netbeans.modules.terminal [1.5.1 201107282000]
+	org.netbeans.core.output2/1 [1.22.1 201107282000]
 	org.netbeans.modules.web.jspparser/3 [3.11.1 201107282000]
 	org.netbeans.modules.extexecution/2 [1.25.1 201107282000]
 	org.netbeans.modules.autoupdate.ui [1.23.1 201107282000]
@@ -503,7 +503,9 @@ INFO [org.netbeans.core.startup.NbEvents]: Turning on modules:
 	org.netbeans.core.netigso [1.9.1 201107282000]
 	org.netbeans.core.nativeaccess/1 [1.12.1 201107282000]
 	org.netbeans.core.io.ui/1 [1.12.1 201107282000]
-	org.bisanti.uieditor [1.0 130703]
+	org.bisanti.uieditor [1.0 130706]
+Post-initialization command-line options could not be run.
+INFO [org.netbeans.core.ui.sampler.SelfSamplerAction]: Slowness detector disabled - running in debug mode
 Diagnostic information
 Input arguments:
 	-Dnetbeans.importclass=org.netbeans.upgrade.AutoUpgrade
@@ -519,6 +521,8 @@ Input arguments:
 	-XX:MaxPermSize=384m
 	-Dnetbeans.logger.console=true
 	-ea
+	-Xdebug
+	-Xrunjdwp:transport=dt_socket,suspend=y,server=n,address=127.0.0.1:51883
 	-Djdk.home=C:\Program Files (x86)\Java\jdk1.7.0_09
 	-splash:C:\Users\Jason\Documents\GitHub\Netbeans-UI-Editor-Plugin\UI-Editor\build\testuserdir\var\cache\splash.png
 	-Dnetbeans.home=C:\Program Files (x86)\NetBeans 7.0.1\platform
@@ -533,9 +537,16 @@ Heap memory usage: initial 32.0MB maximum 742.4MB
 Non heap memory usage: initial 32.2MB maximum 416.0MB
 Garbage collector: Copy (Collections=65 Total time spent=0s)
 Garbage collector: MarkSweepCompact (Collections=2 Total time spent=0s)
-Classes: loaded=6510 total loaded=6510 unloaded 0
+Classes: loaded=6489 total loaded=6489 unloaded 0
 INFO [org.netbeans.core.ui.warmup.DiagnosticTask]: Total memory 4,294,967,295
 WARNING [org.netbeans.core.startup.InstalledFileLocatorImpl]: no code name base passed when looking up modules/dict/dictionary_en_US.description at org.netbeans.modules.spellchecker.DictionaryProviderImpl.getDictionaryStream(DictionaryProviderImpl.java:183)
-WARNING [org.openide.util.WeakListenerImpl]: Can't remove java.beans.PropertyChangeListener using method removePropertyChangeListener from org.netbeans.modules.editor.NbEditorDocument@17e22c5, mimeType='text/x-java', kitClass=null, length=3926, version=1, file=null
+WARNING [org.openide.util.WeakListenerImpl]: Can't remove java.beans.PropertyChangeListener using method removePropertyChangeListener from org.netbeans.modules.editor.NbEditorDocument@e6e933, mimeType='text/x-java', kitClass=null, length=3926, version=1, file=null
+INFO [org.netbeans.core.ui.sampler.SelfSamplerAction]: Slowness detector disabled - running in debug mode
 WARNING [org.openide.filesystems.Ordering]: Not all children in Menu/Window/ marked with the position attribute: [org-bisanti-uieditor-UIEditorTopComponent.shadow], but some are: [org-netbeans-modules-project-ui-logical-tab-action.shadow, org-netbeans-modules-project-ui-physical-tab-action.shadow, org-netbeans-modules-favorites-View.shadow, org-netbeans-core-ide-ServicesTabAction.shadow, org-netbeans-modules-tasklist-ui-TaskListAction.shadow, ShowPaletteAction.shadow, org-netbeans-core-windows-actions-GlobalPropertiesAction.shadow, Output, Navigator, Debug, Profile, Versioning, Other, SwitchToRecentDocumentAction.shadow, ProgressListAction.shadow, Separator3.instance, CloseWindowAction.shadow, MaximizeWindowAction.shadow, org-netbeans-core-windows-actions-UndockAction.shadow, Separator4.instance, CloneDocumentAction.shadow, CloseAllDocumentsAction.shadow, CloseAllButThisAction.shadow, DocumentsAction.shadow, Separator5.instance, org-netbeans-core-windows-actions-ResetWindowsAction.shadow]
 INFO [org.netbeans.modules.autoupdate.updateprovider.AutoupdateCatalogParser]: Unpaired license 86E537EB without any module.
+INFO [org.netbeans.core.ui.sampler.SelfSamplerAction]: Slowness detector disabled - running in debug mode
+INFO [org.netbeans.core.ui.sampler.SelfSamplerAction]: Slowness detector disabled - running in debug mode
+INFO [org.netbeans.core.ui.sampler.SelfSamplerAction]: Slowness detector disabled - running in debug mode
+INFO [org.netbeans.core.ui.sampler.SelfSamplerAction]: Slowness detector disabled - running in debug mode
+WARNING [org.netbeans.core.TimableEventQueue]: too much time in AWT thread null
+INFO [org.netbeans.core.ui.sampler.SelfSamplerAction]: Slowness detector disabled - running in debug mode

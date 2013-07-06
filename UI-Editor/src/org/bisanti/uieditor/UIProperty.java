@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * @author Jason Bisanti
  */
-public class UIProperty implements Comparable<UIProperty>
+public class UIProperty implements Comparable<UIProperty>, java.io.Serializable
 {
     private Object name;
     
