@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
->Log Session: Saturday, July 6, 2013 1:20:24 PM MDT
+>Log Session: Sunday, July 14, 2013 4:36:58 PM MDT
 >System Info: 
   Product Version         = NetBeans IDE 7.0.1 (Build 201107282000) (#370b28369872)
   Operating System        = Windows 7 version 6.1 running on x86
@@ -503,50 +503,7 @@ INFO [org.netbeans.core.startup.NbEvents]: Turning on modules:
 	org.netbeans.core.netigso [1.9.1 201107282000]
 	org.netbeans.core.nativeaccess/1 [1.12.1 201107282000]
 	org.netbeans.core.io.ui/1 [1.12.1 201107282000]
-	org.bisanti.uieditor [1.0 130706]
-Post-initialization command-line options could not be run.
-SEVERE [org.openide.util.Exceptions]
-java.lang.ClassNotFoundException: Will not load classes from default package (Metal)
-	at org.netbeans.ProxyClassLoader.loadClass(ProxyClassLoader.java:199)
-	at org.netbeans.ModuleManager$SystemClassLoader.loadClass(ModuleManager.java:558)
-	at java.lang.ClassLoader.loadClass(ClassLoader.java:356)
-	at java.lang.Class.forName0(Native Method)
-	at java.lang.Class.forName(Class.java:264)
-	at javax.swing.SwingUtilities.loadSystemClass(SwingUtilities.java:1874)
-	at javax.swing.UIManager.setLookAndFeel(UIManager.java:579)
-[catch] at org.bisanti.uieditor.UIEditorTopComponent.applyLaf(UIEditorTopComponent.java:143)
-	at org.bisanti.uieditor.UIEditorTopComponent.<init>(UIEditorTopComponent.java:92)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:57)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
-	at java.lang.reflect.Constructor.newInstance(Constructor.java:525)
-	at java.lang.Class.newInstance0(Class.java:372)
-	at java.lang.Class.newInstance(Class.java:325)
-	at org.netbeans.modules.settings.convertors.XMLPropertiesConvertor.defaultInstanceCreate(XMLPropertiesConvertor.java:227)
-	at org.netbeans.modules.settings.convertors.XMLPropertiesConvertor.read(XMLPropertiesConvertor.java:98)
-	at org.netbeans.modules.settings.InstanceProvider$InstanceCookieImpl.instanceCreate(InstanceProvider.java:310)
-	at org.netbeans.core.windows.persistence.PersistenceManager.getTopComponentPersistentForID(PersistenceManager.java:545)
-	at org.netbeans.core.windows.persistence.PersistenceManager.getTopComponentForID(PersistenceManager.java:655)
-	at org.netbeans.core.windows.PersistenceHandler.getTopComponentForID(PersistenceHandler.java:460)
-	at org.netbeans.core.windows.PersistenceHandler.load(PersistenceHandler.java:148)
-	at org.netbeans.core.windows.WindowSystemImpl.load(WindowSystemImpl.java:73)
-	at org.netbeans.core.GuiRunLevel$InitWinSys.run(GuiRunLevel.java:235)
-	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:251)
-	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:721)
-	at java.awt.EventQueue.access$200(EventQueue.java:103)
-	at java.awt.EventQueue$3.run(EventQueue.java:682)
-	at java.awt.EventQueue$3.run(EventQueue.java:680)
-	at java.security.AccessController.doPrivileged(Native Method)
-	at java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:76)
-	at java.awt.EventQueue.dispatchEvent(EventQueue.java:691)
-	at org.netbeans.core.TimableEventQueue.dispatchEvent(TimableEventQueue.java:148)
-	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:244)
-	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:163)
-	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:151)
-	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:147)
-	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:139)
-	at java.awt.EventDispatchThread.run(EventDispatchThread.java:97)
-INFO [org.netbeans.core.ui.sampler.SelfSamplerAction]: Slowness detector disabled - running in debug mode
+	org.bisanti.uieditor [1.0 130714]
 Diagnostic information
 Input arguments:
 	-Dnetbeans.importclass=org.netbeans.upgrade.AutoUpgrade
@@ -562,8 +519,6 @@ Input arguments:
 	-XX:MaxPermSize=384m
 	-Dnetbeans.logger.console=true
 	-ea
-	-Xdebug
-	-Xrunjdwp:transport=dt_socket,suspend=y,server=n,address=127.0.0.1:51879
 	-Djdk.home=C:\Program Files (x86)\Java\jdk1.7.0_09
 	-splash:C:\Users\Jason\Documents\GitHub\Netbeans-UI-Editor-Plugin\UI-Editor\build\testuserdir\var\cache\splash.png
 	-Dnetbeans.home=C:\Program Files (x86)\NetBeans 7.0.1\platform
@@ -576,17 +531,11 @@ Input arguments:
 Compiler: HotSpot Client Compiler
 Heap memory usage: initial 32.0MB maximum 742.4MB
 Non heap memory usage: initial 32.2MB maximum 416.0MB
-Garbage collector: Copy (Collections=71 Total time spent=0s)
+Garbage collector: Copy (Collections=65 Total time spent=0s)
 Garbage collector: MarkSweepCompact (Collections=2 Total time spent=0s)
-Classes: loaded=6553 total loaded=6574 unloaded 21
+Classes: loaded=6385 total loaded=6385 unloaded 0
 INFO [org.netbeans.core.ui.warmup.DiagnosticTask]: Total memory 4,294,967,295
 WARNING [org.netbeans.core.startup.InstalledFileLocatorImpl]: no code name base passed when looking up modules/dict/dictionary_en_US.description at org.netbeans.modules.spellchecker.DictionaryProviderImpl.getDictionaryStream(DictionaryProviderImpl.java:183)
-WARNING [org.openide.util.WeakListenerImpl]: Can't remove java.beans.PropertyChangeListener using method removePropertyChangeListener from org.netbeans.modules.editor.NbEditorDocument@1a94702, mimeType='text/x-java', kitClass=null, length=3926, version=1, file=null
-INFO [org.netbeans.core.ui.sampler.SelfSamplerAction]: Slowness detector disabled - running in debug mode
+WARNING [org.openide.util.WeakListenerImpl]: Can't remove java.beans.PropertyChangeListener using method removePropertyChangeListener from org.netbeans.modules.editor.NbEditorDocument@fe9f78, mimeType='text/x-java', kitClass=null, length=3926, version=1, file=null
 WARNING [org.openide.filesystems.Ordering]: Not all children in Menu/Window/ marked with the position attribute: [org-bisanti-uieditor-UIEditorTopComponent.shadow], but some are: [org-netbeans-modules-project-ui-logical-tab-action.shadow, org-netbeans-modules-project-ui-physical-tab-action.shadow, org-netbeans-modules-favorites-View.shadow, org-netbeans-core-ide-ServicesTabAction.shadow, org-netbeans-modules-tasklist-ui-TaskListAction.shadow, ShowPaletteAction.shadow, org-netbeans-core-windows-actions-GlobalPropertiesAction.shadow, Output, Navigator, Debug, Profile, Versioning, Other, SwitchToRecentDocumentAction.shadow, ProgressListAction.shadow, Separator3.instance, CloseWindowAction.shadow, MaximizeWindowAction.shadow, org-netbeans-core-windows-actions-UndockAction.shadow, Separator4.instance, CloneDocumentAction.shadow, CloseAllDocumentsAction.shadow, CloseAllButThisAction.shadow, DocumentsAction.shadow, Separator5.instance, org-netbeans-core-windows-actions-ResetWindowsAction.shadow]
 INFO [org.netbeans.modules.autoupdate.updateprovider.AutoupdateCatalogParser]: Unpaired license 86E537EB without any module.
-INFO [org.netbeans.core.ui.sampler.SelfSamplerAction]: Slowness detector disabled - running in debug mode
-INFO [org.netbeans.core.ui.sampler.SelfSamplerAction]: Slowness detector disabled - running in debug mode
-INFO [org.netbeans.core.ui.sampler.SelfSamplerAction]: Slowness detector disabled - running in debug mode
-INFO [org.netbeans.core.ui.sampler.SelfSamplerAction]: Slowness detector disabled - running in debug mode
-INFO [org.netbeans.core.ui.sampler.SelfSamplerAction]: Slowness detector disabled - running in debug mode

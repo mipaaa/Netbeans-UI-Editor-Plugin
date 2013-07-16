@@ -2,11 +2,13 @@
 package org.bisanti.uieditor;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.plaf.ColorUIResource;
 import org.bisanti.util.Pair;
+import org.bisanti.util.StringUtil;
 import org.bisanti.util.Util;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
