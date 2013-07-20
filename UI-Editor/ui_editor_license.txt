@@ -1,0 +1,3 @@
+You can use, reproduce, and modify this plugin and related source code as you wish.
+I just ask that you keep my name wherever it appears in code. If you have any
+questions, you can reach me at: jasonbisanti@gmail.com
