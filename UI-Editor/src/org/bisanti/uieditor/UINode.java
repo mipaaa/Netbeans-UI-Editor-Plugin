@@ -6,9 +6,11 @@ import java.awt.Font;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
 import java.lang.reflect.InvocationTargetException;
+import javax.swing.UIDefaults.ActiveValue;
+import javax.swing.UIManager;
 import javax.swing.plaf.ColorUIResource;
+import javax.swing.plaf.FontUIResource;
 import org.bisanti.util.Pair;
-import org.bisanti.util.StringUtil;
 import org.bisanti.util.Util;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
@@ -21,6 +23,7 @@ import org.openide.nodes.Sheet;
  *
  * @author Jason Bisanti
  */
+@SuppressWarnings({"unchecked","rawtypes"})
 public class UINode extends AbstractNode
 {
     public static final String VALUE_PROP = "VALUE";
@@ -29,9 +32,9 @@ public class UINode extends AbstractNode
     
     private UIProperty prop;
     
-    private final Object originalValue;
+    private Object originalValue;
     
-    private boolean original = true;
+    private boolean original;
     
     public UINode(UIProperty prop)
     {
@@ -39,11 +42,20 @@ public class UINode extends AbstractNode
         super.setName(prop.getName().toString());
         this.prop = prop;
         this.originalValue = prop.getValue();
+        if(UIEditorTopComponent.applied.contains(prop))
+        {
+            prop.setValue(UIManager.get(prop.getName()));
+            this.original = false;
+            UINode.this.firePropertyChange(VALUE_PROP, null, prop);
+        }
+        else
+        {
+            this.original = true;
+        }
     }
     
     public static boolean hasEditor(Class type)
-    {
-        
+    {        
         return findEditor(type) != null;
     }
     
@@ -97,6 +109,18 @@ public class UINode extends AbstractNode
         {
             p =  new EditorProp(pair.getSecond(), true);
         }
+        else if(ActiveValue.class.isAssignableFrom(c) && ((ActiveValue)value).createValue(UIManager.getDefaults()) instanceof Font)
+        {
+            Font newValue = (Font) ((ActiveValue)value).createValue(UIManager.getDefaults());
+            this.prop.setValue(new FontUIResource(newValue));
+            p = new EditorProp(Font.class, true);
+        }
+        else if(ActiveValue.class.isAssignableFrom(c) && ((ActiveValue)value).createValue(UIManager.getDefaults()) instanceof Color)
+        {
+            Color newValue = (Color) ((ActiveValue)value).createValue(UIManager.getDefaults());
+            this.prop.setValue(new ColorUIResource(newValue));
+            p = new EditorProp(Color.class, true);
+        }
         else
         {
             final String val = c.getName() + ": " + value;
@@ -132,7 +156,12 @@ public class UINode extends AbstractNode
     @Override
     public String getHtmlDisplayName()
     {
-        return this.original ? null : "<b>" + this.getDisplayName();
+        return this.original ? null : "<b>* " + this.getDisplayName();
+    }
+    
+    public boolean isOriginalValue()
+    {
+        return this.original;
     }
     
     private class EditorProp<T> extends PropertySupport.ReadWrite<T>
@@ -164,6 +193,7 @@ public class UINode extends AbstractNode
             {
                 this.set(t);
                 original = Util.equal(originalValue, t);
+                ((UIParentNode)getParentNode()).update();
                 UINode.this.firePropertyChange(VALUE_PROP, null, prop);
             }
         }
@@ -174,6 +204,10 @@ public class UINode extends AbstractNode
             if (value instanceof ColorUIResource)
             {
                 prop.setValue(new ColorUIResource((Color) newValue));
+            }
+            else if(value instanceof FontUIResource)
+            {
+                prop.setValue(new FontUIResource((Font) newValue));
             }
             else
             {

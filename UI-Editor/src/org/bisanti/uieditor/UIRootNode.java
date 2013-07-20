@@ -21,6 +21,7 @@ import org.openide.nodes.Sheet;
  *
  * @author Jason Bisanti
  */
+@SuppressWarnings({"unchecked","rawtypes"})
 public class UIRootNode extends AbstractNode
 {
     public UIRootNode(SortedMap<String, Collection<UIProperty>> nodes, PropertyChangeListener pcl)

@@ -11,6 +11,7 @@ import java.util.Map;
  *
  * @author Jason Bisanti
  */
+@SuppressWarnings("rawtypes")
 public class UIProperty implements Comparable<UIProperty>, java.io.Serializable
 {
     private Object name;
