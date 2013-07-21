@@ -49,7 +49,7 @@ autostore = false)
 @TopComponent.Description(preferredID = "UIEditorTopComponent",
 //iconBase="SET/PATH/TO/ICON/HERE", 
 persistenceType = TopComponent.PERSISTENCE_ALWAYS)
-@TopComponent.Registration(mode = "editor", openAtStartup = true)
+@TopComponent.Registration(mode = "editor", openAtStartup = false)
 @ActionID(category = "Window", id = "org.bisanti.uieditor.UIEditorTopComponent")
 @ActionReference(path = "Menu/Window" /*, position = 333 */)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_UIEditorAction",
@@ -59,8 +59,7 @@ preferredID = "UIEditorTopComponent")
 public final class UIEditorTopComponent extends TopComponent implements
         ExplorerManager.Provider, PropertyChangeListener
 {
-    public static final String FILE = 
-            FileUtil.MAIN_DIR + File.separator + "ui_editor.uidefaults";
+    public static final String FILE = FileUtil.USER_HOME + File.separator + ".netbeans.ui_editor";
     
     public static final Set<UIProperty> applied = new TreeSet<UIProperty>();
     
@@ -126,6 +125,7 @@ public final class UIEditorTopComponent extends TopComponent implements
             applied.add(prop);
         }
         SwingUtilities.updateComponentTreeUI(WindowManager.getDefault().getMainWindow());
+        WindowManager.getDefault().getMainWindow().repaint();
     }
     
     private void updateLafDescription()
@@ -166,6 +166,7 @@ public final class UIEditorTopComponent extends TopComponent implements
             }
             UIManager.setLookAndFeel(name);
             SwingUtilities.updateComponentTreeUI(WindowManager.getDefault().getMainWindow());
+            WindowManager.getDefault().getMainWindow().repaint();
             this.updateLafDescription();
         } 
         catch (Exception ex)
@@ -441,7 +442,10 @@ public final class UIEditorTopComponent extends TopComponent implements
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_saveButtonActionPerformed
     {//GEN-HEADEREND:event_saveButtonActionPerformed
-        DialogDescriptor confirm = new DialogDescriptor("This will set your current UI settings as the default and erase any previously saved settings. Are you sure you want to continue?", "Confirm Save");
+        StringBuilder sb = new StringBuilder("This will set your current UI settings as the default and erase any previously saved settings. The settings will be saved at: ");
+        sb.append(FILE).append("\n\n");
+        sb.append("Are you sure you want to continue?");
+        DialogDescriptor confirm = new DialogDescriptor(sb.toString(), "Confirm Save");
         confirm.setMessageType(DialogDescriptor.WARNING_MESSAGE);
         if(DialogDisplayer.getDefault().notify(confirm) == DialogDescriptor.OK_OPTION)
         {
