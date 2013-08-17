@@ -3,19 +3,26 @@ package org.bisanti.uieditor;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
+import java.awt.image.ImageObserver;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
 import java.lang.reflect.InvocationTargetException;
+import javax.swing.Icon;
+import javax.swing.SwingUtilities;
 import javax.swing.UIDefaults.ActiveValue;
+import javax.swing.UIDefaults.LazyValue;
 import javax.swing.UIManager;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.FontUIResource;
 import org.bisanti.util.Pair;
+import org.bisanti.util.StringUtil;
 import org.bisanti.util.Util;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
+import org.openide.util.ImageUtilities;
 
 
 /**
@@ -36,12 +43,25 @@ public class UINode extends AbstractNode
     
     private boolean original;
     
+    private Image image;
+    
     public UINode(UIProperty prop)
     {
         super(Children.LEAF);
         super.setName(prop.getName().toString());
         this.prop = prop;
         this.originalValue = prop.getValue();
+        if(this.originalValue instanceof LazyValue)
+        {
+            this.originalValue = ((LazyValue)this.originalValue).createValue(UIManager.getDefaults());
+            this.prop.setValue(this.originalValue);
+        }
+        else if(this.originalValue instanceof ActiveValue)
+        {
+            this.originalValue = ((ActiveValue)this.originalValue).createValue(UIManager.getDefaults());
+            this.prop.setValue(this.originalValue);
+        }
+        
         if(UIEditorTopComponent.applied.contains(prop))
         {
             prop.setValue(UIManager.get(prop.getName()));
@@ -54,6 +74,11 @@ public class UINode extends AbstractNode
         }
     }
     
+    public UIProperty getUIProperty()
+    {
+        return this.prop;
+    }
+    
     public static boolean hasEditor(Class type)
     {        
         return findEditor(type) != null;
@@ -61,6 +86,11 @@ public class UINode extends AbstractNode
     
     public static Pair<PropertyEditor, Class> findEditor(Class type)
     {
+        if(type == null)
+        {
+            return null;
+        }
+        
         PropertyEditor ped = PropertyEditorManager.findEditor(type);
         
         if(validEditor(ped))
@@ -101,7 +131,7 @@ public class UINode extends AbstractNode
     protected Property[] createProperties()
     {
         Object value = this.prop.getValue();
-        Class c = value.getClass();
+        Class c = value == null ? null : value.getClass();
         Property p;
         
         Pair<PropertyEditor, Class> pair = findEditor(c);
@@ -109,21 +139,46 @@ public class UINode extends AbstractNode
         {
             p =  new EditorProp(pair.getSecond(), true);
         }
-        else if(ActiveValue.class.isAssignableFrom(c) && ((ActiveValue)value).createValue(UIManager.getDefaults()) instanceof Font)
+        else if(value instanceof Icon)
         {
-            Font newValue = (Font) ((ActiveValue)value).createValue(UIManager.getDefaults());
-            this.prop.setValue(new FontUIResource(newValue));
-            p = new EditorProp(Font.class, true);
-        }
-        else if(ActiveValue.class.isAssignableFrom(c) && ((ActiveValue)value).createValue(UIManager.getDefaults()) instanceof Color)
-        {
-            Color newValue = (Color) ((ActiveValue)value).createValue(UIManager.getDefaults());
-            this.prop.setValue(new ColorUIResource(newValue));
-            p = new EditorProp(Color.class, true);
+            IconProperty ip = new IconProperty(value, VALUE_PROP, VALUE_DISPLAY, "");
+            
+            try
+            {
+                this.image = ImageUtilities.icon2Image(ip.getIcon());
+                ImageObserver io = new ImageObserver()
+                {
+                    @Override
+                    public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height)
+                    {
+                        return false;
+                    }
+                };
+                Image orig = super.getIcon(1);
+                if(this.image.getHeight(io) > orig.getHeight(io))
+                {
+                    this.image = this.image.getScaledInstance(orig.getWidth(io), orig.getHeight(io), 0);
+                    ip.setIcon(ImageUtilities.image2Icon(this.image));
+                }
+                
+                SwingUtilities.invokeLater(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        fireIconChange();
+                        fireOpenedIconChange();
+                    }
+                });
+            }
+            catch(Exception ex){}
+            
+            p = ip;
         }
         else
         {
-            final String val = c.getName() + ": " + value;
+            String nl = StringUtil.NEW_LINE;
+            final String val = "CLASS: " + nl + (c == null ? null : c.getName()) + " " + nl + nl + "VALUE: " + nl + value;
             p = new EditorProp<String>(String.class, false)
             {
                 @Override
@@ -157,6 +212,18 @@ public class UINode extends AbstractNode
     public String getHtmlDisplayName()
     {
         return this.original ? null : "<b>* " + this.getDisplayName();
+    }
+
+    @Override
+    public Image getIcon(int type)
+    {
+        return this.image == null ? super.getIcon(type) : this.image; 
+    }
+
+    @Override
+    public Image getOpenedIcon(int type)
+    {
+        return this.image == null ? super.getOpenedIcon(type) : this.image;
     }
     
     public boolean isOriginalValue()
