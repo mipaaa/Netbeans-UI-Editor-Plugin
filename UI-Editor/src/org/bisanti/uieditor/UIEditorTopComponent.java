@@ -7,10 +7,8 @@ package org.bisanti.uieditor;
 import java.awt.event.ItemEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyVetoException;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -36,7 +34,6 @@ import org.openide.windows.TopComponent;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor.Message;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.explorer.ExplorerManager;
@@ -81,8 +78,6 @@ public final class UIEditorTopComponent extends TopComponent implements
     private final ExplorerManager manager = new ExplorerManager();
     
     private final Set<UIProperty> changed = new TreeSet<UIProperty>();
-    
-    private List<Node> allNodes = new ArrayList<Node>();
 
     public UIEditorTopComponent()
     {
@@ -182,9 +177,7 @@ public final class UIEditorTopComponent extends TopComponent implements
     }
     
     private void refreshProperties()
-    {        
-        this.allNodes.clear();
-        
+    {                
         SortedMap<String, Collection<UIProperty>> propNodes = 
                 new TreeMap<String, Collection<UIProperty>>(String.CASE_INSENSITIVE_ORDER);
         
@@ -233,12 +226,6 @@ public final class UIEditorTopComponent extends TopComponent implements
             this.propTreeTable.addPropertyColumn(col.getName(), col.getDisplayName(), col.getShortDescription());
         }
         this.manager.setRootContext(root);
-        
-        for(Node parent: root.getChildren().getNodes(true))
-        {
-            this.allNodes.add(parent);
-            this.allNodes.addAll(Arrays.asList(parent.getChildren().getNodes(true)));
-        }
     }
     
 
@@ -252,61 +239,6 @@ public final class UIEditorTopComponent extends TopComponent implements
         else
         {
             return selected[0];
-        }
-    }
-    
-    private void findNext(Node start, String text, boolean forward)
-    {        
-        List<Node> toSearch;
-        if(forward)
-        {
-            toSearch = this.allNodes;
-        }
-        else
-        {
-            toSearch = new ArrayList<Node>(this.allNodes);
-            Collections.reverse(toSearch);
-        }
-        
-        for(int i=toSearch.indexOf(start) + 1; i<toSearch.size(); i++)
-        {
-            if(this.contains(this.allNodes.get(i), text))
-            {
-                this.select(this.allNodes.get(i));
-                return;
-            }
-        }
-        
-        DialogDisplayer.getDefault().notify(new Message("Text '" + text + "' not found"));
-    }
-    
-    public boolean contains(Node n, String text)
-    {
-        if(n.getDisplayName().contains(text))
-        {
-            return true;
-        }
-        else if(n instanceof UINode)
-        {
-            UIProperty uip = ((UINode)n).getUIProperty();
-            if(String.valueOf(uip.getValue()).contains(text))
-            {
-                return true;
-            }
-        }
-        
-        return false;
-    }
-    
-    private void select(Node... nodes)
-    {
-        try
-        {
-            this.manager.setSelectedNodes(nodes);
-        } 
-        catch (PropertyVetoException ex)
-        {
-            Exceptions.printStackTrace(ex);
         }
     }
 
@@ -324,7 +256,6 @@ public final class UIEditorTopComponent extends TopComponent implements
         deleteButton = new javax.swing.JButton();
         resetButton = new javax.swing.JButton();
         lafsPanel = new javax.swing.JPanel();
-        applyPropsButton = new javax.swing.JButton();
         propTreeTable = new org.openide.explorer.view.OutlineView("Property");
         jLabel1 = new javax.swing.JLabel();
         lafComboBox = new javax.swing.JComboBox();
@@ -335,10 +266,8 @@ public final class UIEditorTopComponent extends TopComponent implements
         lafDescription = new javax.swing.JLabel();
         expandButton = new javax.swing.JButton();
         collapseButton = new javax.swing.JButton();
-        searchTextField = new javax.swing.JTextField();
-        prevButton = new javax.swing.JButton();
-        nextButton = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
+        applyPropsButton = new javax.swing.JButton();
+        helpButton = new javax.swing.JButton();
 
         org.openide.awt.Mnemonics.setLocalizedText(saveButton, org.openide.util.NbBundle.getMessage(UIEditorTopComponent.class, "UIEditorTopComponent.saveButton.text")); // NOI18N
         saveButton.addActionListener(new java.awt.event.ActionListener()
@@ -364,15 +293,6 @@ public final class UIEditorTopComponent extends TopComponent implements
             public void actionPerformed(java.awt.event.ActionEvent evt)
             {
                 resetButtonActionPerformed(evt);
-            }
-        });
-
-        org.openide.awt.Mnemonics.setLocalizedText(applyPropsButton, org.openide.util.NbBundle.getMessage(UIEditorTopComponent.class, "UIEditorTopComponent.applyPropsButton.text")); // NOI18N
-        applyPropsButton.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                applyPropsButtonActionPerformed(evt);
             }
         });
 
@@ -426,8 +346,7 @@ public final class UIEditorTopComponent extends TopComponent implements
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lafDescription)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 197, Short.MAX_VALUE)
-                        .addComponent(applyPropsButton)))
+                        .addGap(0, 325, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         lafsPanelLayout.setVerticalGroup(
@@ -435,7 +354,6 @@ public final class UIEditorTopComponent extends TopComponent implements
             .addGroup(lafsPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(lafsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(applyPropsButton)
                     .addComponent(jLabel1)
                     .addComponent(lafComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(themeLabel)
@@ -466,27 +384,23 @@ public final class UIEditorTopComponent extends TopComponent implements
             }
         });
 
-        searchTextField.setText(org.openide.util.NbBundle.getMessage(UIEditorTopComponent.class, "UIEditorTopComponent.searchTextField.text")); // NOI18N
-
-        org.openide.awt.Mnemonics.setLocalizedText(prevButton, Character.toChars(8593)[0]+ " Previous");
-        prevButton.addActionListener(new java.awt.event.ActionListener()
+        org.openide.awt.Mnemonics.setLocalizedText(applyPropsButton, org.openide.util.NbBundle.getMessage(UIEditorTopComponent.class, "UIEditorTopComponent.applyPropsButton.text")); // NOI18N
+        applyPropsButton.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
             {
-                prevButtonActionPerformed(evt);
+                applyPropsButtonActionPerformed(evt);
             }
         });
 
-        org.openide.awt.Mnemonics.setLocalizedText(nextButton, "     "+Character.toChars(8595)[0]+"Next     ");
-        nextButton.addActionListener(new java.awt.event.ActionListener()
+        org.openide.awt.Mnemonics.setLocalizedText(helpButton, org.openide.util.NbBundle.getMessage(UIEditorTopComponent.class, "UIEditorTopComponent.helpButton.text")); // NOI18N
+        helpButton.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
             {
-                nextButtonActionPerformed(evt);
+                helpButtonActionPerformed(evt);
             }
         });
-
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel3, org.openide.util.NbBundle.getMessage(UIEditorTopComponent.class, "UIEditorTopComponent.jLabel3.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -496,7 +410,8 @@ public final class UIEditorTopComponent extends TopComponent implements
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(helpButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(saveButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deleteButton)
@@ -510,13 +425,7 @@ public final class UIEditorTopComponent extends TopComponent implements
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(collapseButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(nextButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(prevButton))
+                                .addComponent(applyPropsButton))
                             .addComponent(lafsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(5, 5, 5)))
                 .addContainerGap())
@@ -528,7 +437,8 @@ public final class UIEditorTopComponent extends TopComponent implements
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(resetButton)
                     .addComponent(deleteButton)
-                    .addComponent(saveButton))
+                    .addComponent(saveButton)
+                    .addComponent(helpButton))
                 .addGap(28, 28, 28)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -537,10 +447,7 @@ public final class UIEditorTopComponent extends TopComponent implements
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(expandButton)
                     .addComponent(collapseButton)
-                    .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(prevButton)
-                    .addComponent(nextButton)
-                    .addComponent(jLabel3))
+                    .addComponent(applyPropsButton))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -673,34 +580,28 @@ public final class UIEditorTopComponent extends TopComponent implements
         }
     }//GEN-LAST:event_collapseButtonActionPerformed
 
-    private void nextButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_nextButtonActionPerformed
-    {//GEN-HEADEREND:event_nextButtonActionPerformed
-        this.findNext(this.getStartNode(), this.searchTextField.getText(), true);
-    }//GEN-LAST:event_nextButtonActionPerformed
-
-    private void prevButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_prevButtonActionPerformed
-    {//GEN-HEADEREND:event_prevButtonActionPerformed
-        this.findNext(this.getStartNode(), this.searchTextField.getText(), false);
-    }//GEN-LAST:event_prevButtonActionPerformed
+    private void helpButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_helpButtonActionPerformed
+    {//GEN-HEADEREND:event_helpButtonActionPerformed
+        HelpAndInfo hai = HelpAndInfo.getInstance();
+        hai.setLocationRelativeTo(this);
+        hai.setVisible(true);
+    }//GEN-LAST:event_helpButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton applyPropsButton;
     private javax.swing.JButton collapseButton;
     private javax.swing.JButton deleteButton;
     private javax.swing.JButton expandButton;
+    private javax.swing.JButton helpButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JComboBox lafComboBox;
     private javax.swing.JLabel lafDescription;
     private javax.swing.JPanel lafsPanel;
-    private javax.swing.JButton nextButton;
-    private javax.swing.JButton prevButton;
     private org.openide.explorer.view.OutlineView propTreeTable;
     private javax.swing.JButton resetButton;
     private javax.swing.JButton saveButton;
-    private javax.swing.JTextField searchTextField;
     private javax.swing.JButton setLafButton;
     private javax.swing.JComboBox themeComboBox;
     private javax.swing.JLabel themeLabel;
