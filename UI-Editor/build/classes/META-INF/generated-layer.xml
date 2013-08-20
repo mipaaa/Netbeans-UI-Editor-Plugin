@@ -79,6 +79,7 @@
                 <attr name="preferredID" stringvalue="UIEditorTopComponent"/>
                 <attr
                     bundlevalue="org.bisanti.uieditor.Bundle#CTL_UIEditorAction" name="displayName"/>
+                <attr name="iconBase" stringvalue="mainIcon.png"/>
             </file>
         </folder>
     </folder>

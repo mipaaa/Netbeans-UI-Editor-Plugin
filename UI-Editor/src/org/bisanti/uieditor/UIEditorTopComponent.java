@@ -4,6 +4,7 @@
  */
 package org.bisanti.uieditor;
 
+import java.awt.Image;
 import java.awt.event.ItemEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -18,6 +19,8 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -40,6 +43,7 @@ import org.openide.explorer.ExplorerManager;
 import org.openide.nodes.Node;
 import org.openide.nodes.Node.Property;
 import org.openide.util.Exceptions;
+import org.openide.util.ImageUtilities;
 import org.openide.windows.WindowManager;
 
 /**
@@ -48,7 +52,7 @@ import org.openide.windows.WindowManager;
 @ConvertAsProperties(dtd = "-//org.bisanti.uieditor//UIEditor//EN",
 autostore = false)
 @TopComponent.Description(preferredID = "UIEditorTopComponent",
-//iconBase="SET/PATH/TO/ICON/HERE", 
+iconBase = "mainIcon.png", 
 persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "editor", openAtStartup = false)
 @ActionID(category = "Window", id = "org.bisanti.uieditor.UIEditorTopComponent")
@@ -59,7 +63,7 @@ preferredID = "UIEditorTopComponent")
 @SuppressWarnings({"unchecked","rawtypes"})
 public final class UIEditorTopComponent extends TopComponent implements
         ExplorerManager.Provider, PropertyChangeListener
-{
+{    
     public static final String FILE = FileUtil.USER_HOME + File.separator + ".netbeans.ui_editor";
     
     public static final Set<UIProperty> applied = new TreeSet<UIProperty>();
@@ -127,6 +131,18 @@ public final class UIEditorTopComponent extends TopComponent implements
         }
         SwingUtilities.updateComponentTreeUI(WindowManager.getDefault().getMainWindow());
         WindowManager.getDefault().getMainWindow().repaint();
+    }
+    
+    private Icon convertToSize(String property)
+    {
+        Icon icon = UIManager.getIcon(property);
+        if(icon != null && icon.getIconHeight() > 16 && icon.getIconWidth() > 16)
+        {
+            Image image = ImageUtilities.icon2Image(icon);
+            image = image.getScaledInstance(16, 16, 0);
+            return ImageUtilities.image2Icon(image);
+        }
+        return icon;
     }
     
     private void updateLafDescription()
@@ -417,7 +433,7 @@ public final class UIEditorTopComponent extends TopComponent implements
                         .addComponent(deleteButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(resetButton))
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 720, Short.MAX_VALUE)
+                    .addComponent(jSeparator1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
@@ -646,5 +662,15 @@ public final class UIEditorTopComponent extends TopComponent implements
             this.changed.add((UIProperty)evt.getNewValue());
             this.repaint();
         }
+    }
+    
+    @Override
+    public void repaint()
+    {
+        super.repaint();
+        this.helpButton.setIcon(this.convertToSize("OptionPane.questionIcon"));
+        this.saveButton.setIcon(this.convertToSize("FileView.floppyDriveIcon"));
+        this.deleteButton.setIcon(this.convertToSize("OptionPane.errorIcon"));
+        this.resetButton.setIcon(this.convertToSize("FileView.computerIcon"));
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="org.bisanti.uieditor">
-    <module_version install_time="1376884926454" last="true" origin="installer" specification_version="1.0">
+    <module_version install_time="1376968967506" last="true" origin="installer" specification_version="1.0">
         <file crc="3716251284" name="config/Modules/org-bisanti-uieditor.xml"/>
         <file crc="226650690" name="modules/ext/Bisanti.jar"/>
-        <file crc="3465265713" name="modules/org-bisanti-uieditor.jar"/>
+        <file crc="411732064" name="modules/org-bisanti-uieditor.jar"/>
     </module_version>
 </module>
