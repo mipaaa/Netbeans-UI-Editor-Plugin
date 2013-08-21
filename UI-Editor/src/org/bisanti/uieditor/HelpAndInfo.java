@@ -7,6 +7,7 @@ package org.bisanti.uieditor;
 import javax.swing.text.html.HTMLEditorKit;
 import org.bisanti.util.FileUtil;
 import org.openide.util.Exceptions;
+import org.openide.util.ImageUtilities;
 
 /**
  *
@@ -22,6 +23,7 @@ public class HelpAndInfo extends javax.swing.JFrame
     private HelpAndInfo()
     {
         super("UI-Editor Help and Information");
+        super.setIconImage(ImageUtilities.loadImage("mainIcon.png"));
         initComponents();
         this.howToTextPane.setEditorKit(new HTMLEditorKit());
         this.tipsAndTricksTextPane.setEditorKit(new HTMLEditorKit());

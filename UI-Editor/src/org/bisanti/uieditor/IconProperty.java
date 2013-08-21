@@ -32,6 +32,7 @@ import org.openide.nodes.PropertySupport;
  *
  * @author Jason Bisanti
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class IconProperty extends PropertySupport.ReadOnly
 {
     private static final Set<JComponent> components = new HashSet<JComponent>();
