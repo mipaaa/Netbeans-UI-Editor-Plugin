@@ -51,7 +51,7 @@ import org.openide.windows.WindowManager;
 @ConvertAsProperties(dtd = "-//org.bisanti.uieditor//UIEditor//EN",
 autostore = false)
 @TopComponent.Description(preferredID = "UIEditorTopComponent",
-iconBase = "mainIcon.png", 
+iconBase = "org/bisanti/uieditor/mainIcon.png", 
 persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "editor", openAtStartup = false)
 @ActionID(category = "Window", id = "org.bisanti.uieditor.UIEditorTopComponent")

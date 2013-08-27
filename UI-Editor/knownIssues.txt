@@ -1,6 +1,0 @@
-<h3>Windows LAF</h3>
-
-I've noticed that when switching to/from the <b>Windows</b> LAF, an Exception is thrown when a Windows-unique table header is being repainted. I have not been able to fix this issue and it appears to be a bug in the Windows LAF class. This <i>does not</i> appear to happen with the <b>Windows Classic</b> LAF. 
-<br><br>
-I've only tested this plugin briefly on other platforms and this issue seems only related to the <b>Windows</b> LAF. If I'm wrong or you have any suggestions about a fix, shoot me an email at <u>jasonbisanti@gmail.com</u>
-

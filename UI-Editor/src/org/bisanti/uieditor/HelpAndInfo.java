@@ -4,10 +4,13 @@
  */
 package org.bisanti.uieditor;
 
+import java.io.File;
+import java.util.ResourceBundle;
 import javax.swing.text.html.HTMLEditorKit;
 import org.bisanti.util.FileUtil;
 import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -15,6 +18,8 @@ import org.openide.util.ImageUtilities;
  */
 public class HelpAndInfo extends javax.swing.JFrame
 {    
+    private final String BASE_DIR = "";//"org" + File.separator + "bisanti" + File.separator + "uieditor" + File.separator;
+    
     private static volatile HelpAndInfo instance;
     
     /**
@@ -32,36 +37,17 @@ public class HelpAndInfo extends javax.swing.JFrame
         
         try
         {
-            StringBuilder sb = new StringBuilder();
-            for(String line: FileUtil.readText("howToUse.txt"))
-            {
-                sb.append(line);
-            }
-            this.howToTextPane.setText(sb.toString());
+            ResourceBundle bundle = NbBundle.getBundle(this.getClass());
+            this.howToTextPane.setText(bundle.getString("HelpAndInfo.HowToUse"));
             this.howToTextPane.setCaretPosition(0);
-            sb.delete(0, sb.length());
-            
-            for(String line: FileUtil.readText("tipsAndTricks.txt"))
-            {
-                sb.append(line);
-            }
-            this.tipsAndTricksTextPane.setText(sb.toString());
+
+            this.tipsAndTricksTextPane.setText(bundle.getString("HelpAndInfo.TipsAndTricks"));
             this.tipsAndTricksTextPane.setCaretPosition(0);
-            
-            sb.delete(0, sb.length());
-            for(String line: FileUtil.readText("knownIssues.txt"))
-            {
-                sb.append(line);
-            }
-            this.issuesTextPane.setText(sb.toString());
+
+            this.issuesTextPane.setText(bundle.getString("HelpAndInfo.KnownIssues"));
             this.issuesTextPane.setCaretPosition(0); 
             
-            sb.delete(0, sb.length());
-            for(String line: FileUtil.readText("about.txt"))
-            {
-                sb.append(line);
-            }
-            this.aboutTextPane.setText(sb.toString());
+            this.aboutTextPane.setText(bundle.getString("HelpAndInfo.About"));
             this.aboutTextPane.setCaretPosition(0);               
         } 
         catch (Exception ex)
