@@ -37,6 +37,8 @@ public class UINode extends AbstractNode
     
     public static final String VALUE_DISPLAY = "Value";
     
+    public static final String VALUE_DESCRIPTION = "An editable or non-editable textual representation of the Property's value";
+    
     private UIProperty prop;
     
     private Object originalValue;
@@ -141,7 +143,7 @@ public class UINode extends AbstractNode
         }
         else if(value instanceof Icon)
         {
-            IconProperty ip = new IconProperty(value, VALUE_PROP, VALUE_DISPLAY, "");
+            IconProperty ip = new IconProperty(value, VALUE_PROP, VALUE_DISPLAY, VALUE_DESCRIPTION);
             
             try
             {
@@ -237,7 +239,7 @@ public class UINode extends AbstractNode
         
         EditorProp(Class<T> clazz, boolean editable)
         {
-            super(VALUE_PROP, clazz, VALUE_DISPLAY, "");
+            super(VALUE_PROP, clazz, VALUE_DISPLAY, VALUE_DESCRIPTION);
             this.editable = editable;
         }
 
