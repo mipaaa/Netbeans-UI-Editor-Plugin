@@ -179,7 +179,7 @@ public class UINode extends AbstractNode
         }
         else
         {
-            String nl = StringUtil.NEW_LINE;
+            String nl = StringUtil.NL;
             final String val = "CLASS: " + nl + (c == null ? null : c.getName()) + " " + nl + nl + "VALUE: " + nl + value;
             p = new EditorProp<String>(String.class, false)
             {

@@ -1,0 +1,129 @@
+<record>
+  <date>2014-08-02T14:07:05</date>
+  <millis>1407010025152</millis>
+  <sequence>81</sequence>
+  <level>FINEST</level>
+  <thread>14</thread>
+  <message>CPU INFO</message>
+  <param>2</param>
+</record>
+<record>
+  <date>2014-08-02T14:07:05</date>
+  <millis>1407010025158</millis>
+  <sequence>82</sequence>
+  <level>FINEST</level>
+  <thread>14</thread>
+  <message>SCREEN SIZE</message>
+  <param>1280</param>
+  <param>800</param>
+  <param>1</param>
+</record>
+<record>
+  <date>2014-08-02T14:07:05</date>
+  <millis>1407010025158</millis>
+  <sequence>83</sequence>
+  <level>CONFIG</level>
+  <thread>14</thread>
+  <message>IDE_STARTUP</message>
+</record>
+<record>
+  <date>2014-08-02T14:07:08</date>
+  <millis>1407010028066</millis>
+  <sequence>94</sequence>
+  <logger>org.netbeans.ui.metrics.laf</logger>
+  <level>INFO</level>
+  <thread>14</thread>
+  <message>USG_LOOK_AND_FEEL</message>
+  <param>Metal</param>
+  <param>Metal</param>
+</record>
+<record>
+  <date>2014-08-02T14:07:12</date>
+  <millis>1407010032943</millis>
+  <sequence>97</sequence>
+  <level>INFO</level>
+  <thread>32</thread>
+  <message>MEMORY</message>
+  <key>MEMORY</key>
+  <catalog>&lt;null&gt;</catalog>
+  <param>4258385920</param>
+</record>
+<record>
+  <date>2014-08-02T14:07:39</date>
+  <millis>1407010059668</millis>
+  <sequence>100</sequence>
+  <logger>org.netbeans.ui.metrics.projects</logger>
+  <level>INFO</level>
+  <thread>20</thread>
+  <message>USG_SHOW_START_PAGE</message>
+  <key>USG_SHOW_START_PAGE</key>
+  <catalog>org.netbeans.modules.welcome.resources.Bundle</catalog>
+  <param>false</param>
+</record>
+<record>
+  <date>2014-08-02T14:07:41</date>
+  <millis>1407010061022</millis>
+  <sequence>101</sequence>
+  <logger>org.netbeans.ui.actions</logger>
+  <level>FINER</level>
+  <thread>20</thread>
+  <message>UI_ACTION_BUTTON_PRESS</message>
+  <key>UI_ACTION_BUTTON_PRESS</key>
+  <catalog>org.openide.awt.Bundle</catalog>
+  <param>org.openide.awt.Actions$MenuItem[Projects]</param>
+  <param>org.openide.awt.Actions$MenuItem</param>
+  <param>org.openide.awt.AlwaysEnabledAction[Pro&amp;jects]</param>
+  <param>org.openide.awt.AlwaysEnabledAction</param>
+  <param>Pro&amp;jects</param>
+</record>
+<record>
+  <date>2014-08-02T14:07:42</date>
+  <millis>1407010062733</millis>
+  <sequence>102</sequence>
+  <logger>org.netbeans.ui.actions</logger>
+  <level>FINER</level>
+  <thread>20</thread>
+  <message>UI_ACTION_BUTTON_PRESS</message>
+  <key>UI_ACTION_BUTTON_PRESS</key>
+  <catalog>org.openide.awt.Bundle</catalog>
+  <param>org.openide.awt.Actions$MenuItem[UI-Editor]</param>
+  <param>org.openide.awt.Actions$MenuItem</param>
+  <param>org.openide.awt.AlwaysEnabledAction[UI-Editor]</param>
+  <param>org.openide.awt.AlwaysEnabledAction</param>
+  <param>UI-Editor</param>
+</record>
+<record>
+  <date>2014-08-02T14:08:29</date>
+  <millis>1407010109714</millis>
+  <sequence>104</sequence>
+  <logger>org.netbeans.ui.indexing</logger>
+  <level>INFO</level>
+  <thread>45</thread>
+  <message>INDEXING_STARTED</message>
+  <key>INDEXING_STARTED</key>
+  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
+  <param>0</param>
+</record>
+<record>
+  <date>2014-08-02T14:08:29</date>
+  <millis>1407010109759</millis>
+  <sequence>105</sequence>
+  <logger>org.netbeans.ui.indexing</logger>
+  <level>INFO</level>
+  <thread>45</thread>
+  <message>INDEXING_FINISHED</message>
+  <key>INDEXING_FINISHED</key>
+  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
+  <param>5</param>
+</record>
+<record>
+  <date>2014-08-02T14:08:29</date>
+  <millis>1407010109791</millis>
+  <sequence>106</sequence>
+  <logger>org.netbeans.ui.focus</logger>
+  <level>FINE</level>
+  <thread>20</thread>
+  <message>LOG_WINDOW_DEACTIVATED</message>
+  <key>LOG_WINDOW_DEACTIVATED</key>
+  <catalog>org.netbeans.core.ui.warmup.Bundle</catalog>
+</record>

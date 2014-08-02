@@ -31,8 +31,6 @@ import javax.swing.plaf.metal.OceanTheme;
 import org.bisanti.util.FileUtil;
 import org.bisanti.util.StringUtil;
 import org.bisanti.util.Util;
-import org.openide.util.NbBundle;
-import org.openide.windows.TopComponent;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -43,6 +41,8 @@ import org.openide.nodes.Node;
 import org.openide.nodes.Node.Property;
 import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
+import org.openide.util.NbBundle;
+import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
 /**
@@ -81,9 +81,11 @@ public final class UIEditorTopComponent extends TopComponent implements
     private final ExplorerManager manager = new ExplorerManager();
     
     private final Set<UIProperty> changed = new TreeSet<UIProperty>();
+    
+    private Object lastLafSelection;
 
     public UIEditorTopComponent()
-    {
+    {        
         for(LookAndFeelInfo lafi: UIManager.getInstalledLookAndFeels())
         {
             this.installedLafs.put(lafi.getName(), lafi.getClassName());
@@ -112,7 +114,6 @@ public final class UIEditorTopComponent extends TopComponent implements
                 UISettings settings = FileUtil.readObjects(file, UISettings.class).get(0);
                 UIManager.setLookAndFeel(settings.getLafName());
                 apply(settings.getProperties());
-                SwingUtilities.updateComponentTreeUI(WindowManager.getDefault().getMainWindow());
             } 
             catch (Exception ex)
             {
@@ -128,7 +129,14 @@ public final class UIEditorTopComponent extends TopComponent implements
             UIManager.put(prop.getName(), prop.getValue());
             applied.add(prop);
         }
+        
+        repaintUI();
+    }
+    
+    private static void repaintUI()
+    {
         SwingUtilities.updateComponentTreeUI(WindowManager.getDefault().getMainWindow());
+        WindowManager.getDefault().getMainWindow().pack();
         WindowManager.getDefault().getMainWindow().repaint();
     }
     
@@ -165,6 +173,22 @@ public final class UIEditorTopComponent extends TopComponent implements
     
     private void applyLaf(String name)
     {
+        final String oldLAF = UIManager.getLookAndFeel().getName();
+        
+        if(!Util.equal(oldLAF, name) && oldLAF.toLowerCase().endsWith("windows"))
+        {            
+            DialogDescriptor msg = new DialogDescriptor(
+                    "Switching from the standard Window LAF to other LAFs has known issues.\n\nIf you are trying to set a new default LAF and Exceptions appear, click the 'Save as My Default' button and restart NetBeans.\n\nDo you want to apply your new LAF?",
+                    "Windows LAF Warning");
+            msg.setMessageType(DialogDescriptor.WARNING_MESSAGE);
+            
+            if(!DialogDescriptor.OK_OPTION.equals(DialogDisplayer.getDefault().notify(msg)))
+            {
+                this.lafComboBox.setSelectedItem(this.lastLafSelection);
+                return;
+            }            
+        }
+        
         try
         {
             String selection = this.lafComboBox.getSelectedItem().toString();
@@ -181,8 +205,7 @@ public final class UIEditorTopComponent extends TopComponent implements
                 }
             }
             UIManager.setLookAndFeel(name);
-            SwingUtilities.updateComponentTreeUI(WindowManager.getDefault().getMainWindow());
-            WindowManager.getDefault().getMainWindow().repaint();
+            repaintUI();
             this.updateLafDescription();
         } 
         catch (Exception ex)
@@ -241,20 +264,6 @@ public final class UIEditorTopComponent extends TopComponent implements
             this.propTreeTable.addPropertyColumn(col.getName(), col.getDisplayName(), col.getShortDescription());
         }
         this.manager.setRootContext(root);
-    }
-    
-
-    private Node getStartNode()
-    {
-        Node[] selected = this.manager.getSelectedNodes();
-        if(Util.isNullOrEmpty(selected))
-        {
-            return this.manager.getRootContext();
-        }
-        else
-        {
-            return selected[0];
-        }
     }
 
     /** This method is called from within the constructor to
@@ -469,11 +478,16 @@ public final class UIEditorTopComponent extends TopComponent implements
 
     private void lafComboBoxItemStateChanged(java.awt.event.ItemEvent evt)//GEN-FIRST:event_lafComboBoxItemStateChanged
     {//GEN-HEADEREND:event_lafComboBoxItemStateChanged
-        if(evt.getStateChange() == ItemEvent.SELECTED)
+        switch(evt.getStateChange())
         {
-            boolean visible = this.lafComboBox.getSelectedItem().toString().contains("Metal");
-            this.themeComboBox.setVisible(visible);
-            this.themeLabel.setVisible(visible);
+            case ItemEvent.SELECTED:
+                boolean visible = this.lafComboBox.getSelectedItem().toString().contains("Metal");
+                this.themeComboBox.setVisible(visible);
+                this.themeLabel.setVisible(visible);
+                break;
+            case ItemEvent.DESELECTED:
+                this.lastLafSelection = evt.getItem();
+                break;
         }
     }//GEN-LAST:event_lafComboBoxItemStateChanged
 

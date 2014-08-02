@@ -39,7 +39,7 @@ public class UIRootNode extends AbstractNode
         if (set == null)
         {
             set = Sheet.createPropertiesSet();
-            set.put(new PropertySupport.ReadOnly(UINode.VALUE_PROP, Object.class, UINode.VALUE_DISPLAY, "") 
+            set.put(new PropertySupport.ReadOnly(UINode.VALUE_PROP, Object.class, UINode.VALUE_DISPLAY, "Given property's UI value") 
             {
                 @Override
                 public Object getValue() throws IllegalAccessException, InvocationTargetException
@@ -49,7 +49,7 @@ public class UIRootNode extends AbstractNode
             });
             sheet.put(set);
         }
-
+        
         return sheet;
     }
     

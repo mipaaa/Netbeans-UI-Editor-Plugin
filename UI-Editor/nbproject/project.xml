@@ -97,7 +97,9 @@
                 </dependency>
             </module-dependencies>
             <public-packages>
+                <package>org.bisanti.swingx</package>
                 <package>org.bisanti.uieditor</package>
+                <package>org.bisanti.util</package>
             </public-packages>
             <class-path-extension>
                 <runtime-relative-path>ext/Bisanti.jar</runtime-relative-path>

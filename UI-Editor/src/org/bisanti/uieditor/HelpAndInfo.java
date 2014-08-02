@@ -4,10 +4,8 @@
  */
 package org.bisanti.uieditor;
 
-import java.io.File;
 import java.util.ResourceBundle;
 import javax.swing.text.html.HTMLEditorKit;
-import org.bisanti.util.FileUtil;
 import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
