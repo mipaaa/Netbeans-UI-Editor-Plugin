@@ -3,10 +3,10 @@
 <windowmanager version="2.1">
     <main-window>
   <joined-properties
-   x="-8"
-   y="-8"
-   width="1296"
-   height="786"
+   x="96"
+   y="54"
+   width="1728"
+   height="974"
    relative-x="0.0"
    relative-y="0.0"
    relative-width="0.0"
@@ -18,10 +18,10 @@
    frame-state="0"
 />
   <separated-properties
-   x="128"
-   y="77"
-   width="1024"
-   height="61"
+   x="192"
+   y="108"
+   width="1536"
+   height="86"
    relative-x="0.0"
    relative-y="0.0"
    relative-width="0.0"
@@ -38,13 +38,13 @@
   <path orientation="horizontal" number="40" weight="0.7" />
   <path orientation="vertical" number="40" weight="0.5" />
   </constraints>
-  <bounds x="422" y="184" width="537" height="338" />
+  <bounds x="633" y="259" width="806" height="475" />
     </editor-area>
-    <screen width="1280" height="800"/>
+    <screen width="1920" height="1080"/>
     <active-mode name="editor"/>
     <toolbar configuration="Standard" preferred-icon-size="24"/>
     <tc-list>
   <tc-id id="UIEditorTopComponent"/>
-  <tc-id id="Welcome"/>
+  <tc-id id="NotificationCenterTopComponent"/>
     </tc-list>
 </windowmanager>

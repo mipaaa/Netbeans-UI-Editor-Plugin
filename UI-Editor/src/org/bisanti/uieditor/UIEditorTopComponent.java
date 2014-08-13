@@ -5,6 +5,8 @@
 package org.bisanti.uieditor;
 
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -34,8 +36,10 @@ import org.bisanti.util.Util;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
+import org.openide.LifecycleManager;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.NotificationDisplayer;
 import org.openide.explorer.ExplorerManager;
 import org.openide.nodes.Node;
 import org.openide.nodes.Node.Property;
@@ -122,15 +126,28 @@ public final class UIEditorTopComponent extends TopComponent implements
         }
     }
     
-    private static void apply(Collection<UIProperty> props)
+    private static boolean apply(Collection<UIProperty> props)
     {
+        boolean restartRequired = false;
+        
         for(UIProperty prop: props)
         {
-            UIManager.put(prop.getName(), prop.getValue());
+            Object name = prop.getName();
+            Object newValue = prop.getValue();
+            Object oldValue = UIManager.put(name, newValue);
+            
+            if(StringUtil.indexOf(false, name.toString(), "font") > -1 && 
+               !Util.equal(oldValue, newValue))
+            {
+                restartRequired = true;
+            }
+            
             applied.add(prop);
         }
         
         repaintUI();
+        
+        return restartRequired;
     }
     
     private static void repaintUI()
@@ -499,8 +516,25 @@ public final class UIEditorTopComponent extends TopComponent implements
 
     private void applyPropsButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_applyPropsButtonActionPerformed
     {//GEN-HEADEREND:event_applyPropsButtonActionPerformed
-        apply(this.changed);
+        boolean restart = apply(this.changed);
         this.changed.clear();
+        if(restart)
+        {
+            NotificationDisplayer.getDefault().notify("UI-Editor: Restart Recommended", 
+                    ImageUtilities.image2Icon(this.getIcon()), 
+                    "One or more Font properties may not be applied correctly until NetBeans is restarted. If necessary, click here to restart.", 
+                    new ActionListener()
+                    {
+                        @Override
+                        public void actionPerformed(ActionEvent e)
+                        {
+                            LifecycleManager lm = LifecycleManager.getDefault();
+                            lm.saveAll();
+                            lm.markForRestart();
+                            lm.exit();
+                        }
+                    });
+        }
     }//GEN-LAST:event_applyPropsButtonActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_saveButtonActionPerformed
