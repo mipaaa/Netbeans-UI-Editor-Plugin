@@ -297,7 +297,7 @@ public final class UIEditorTopComponent extends TopComponent implements
         deleteButton = new javax.swing.JButton();
         resetButton = new javax.swing.JButton();
         lafsPanel = new javax.swing.JPanel();
-        propTreeTable = new org.openide.explorer.view.OutlineView("Property");
+        propTreeTable = new org.openide.explorer.view.OutlineView();
         jLabel1 = new javax.swing.JLabel();
         lafComboBox = new javax.swing.JComboBox();
         themeLabel = new javax.swing.JLabel();
@@ -309,6 +309,7 @@ public final class UIEditorTopComponent extends TopComponent implements
         collapseButton = new javax.swing.JButton();
         applyPropsButton = new javax.swing.JButton();
         helpButton = new javax.swing.JButton();
+        saveAsButton = new javax.swing.JButton();
 
         org.openide.awt.Mnemonics.setLocalizedText(saveButton, org.openide.util.NbBundle.getMessage(UIEditorTopComponent.class, "UIEditorTopComponent.saveButton.text")); // NOI18N
         saveButton.addActionListener(new java.awt.event.ActionListener()
@@ -443,6 +444,8 @@ public final class UIEditorTopComponent extends TopComponent implements
             }
         });
 
+        org.openide.awt.Mnemonics.setLocalizedText(saveAsButton, org.openide.util.NbBundle.getMessage(UIEditorTopComponent.class, "UIEditorTopComponent.saveAsButton.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -453,6 +456,8 @@ public final class UIEditorTopComponent extends TopComponent implements
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(helpButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(saveAsButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(saveButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deleteButton)
@@ -479,7 +484,8 @@ public final class UIEditorTopComponent extends TopComponent implements
                     .addComponent(resetButton)
                     .addComponent(deleteButton)
                     .addComponent(saveButton)
-                    .addComponent(helpButton))
+                    .addComponent(helpButton)
+                    .addComponent(saveAsButton))
                 .addGap(28, 28, 28)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -664,6 +670,7 @@ public final class UIEditorTopComponent extends TopComponent implements
     private javax.swing.JPanel lafsPanel;
     private org.openide.explorer.view.OutlineView propTreeTable;
     private javax.swing.JButton resetButton;
+    private javax.swing.JButton saveAsButton;
     private javax.swing.JButton saveButton;
     private javax.swing.JButton setLafButton;
     private javax.swing.JComboBox themeComboBox;

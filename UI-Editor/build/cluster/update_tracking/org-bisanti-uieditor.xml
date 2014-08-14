@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="org.bisanti.uieditor/2">
-    <module_version install_time="1407889950423" last="true" origin="installer" specification_version="1.1">
+    <module_version install_time="1407976543154" last="true" origin="installer" specification_version="1.1">
         <file crc="3716251284" name="config/Modules/org-bisanti-uieditor.xml"/>
         <file crc="2053241715" name="modules/ext/Bisanti.jar"/>
-        <file crc="1079642000" name="modules/ext/substance-6.0.jar"/>
-        <file crc="2100504060" name="modules/ext/substance-7.2.1.jar"/>
-        <file crc="3466165763" name="modules/ext/synthetica.jar"/>
-        <file crc="3342399029" name="modules/org-bisanti-uieditor.jar"/>
+        <file crc="1204944953" name="modules/org-bisanti-uieditor.jar"/>
     </module_version>
 </module>
