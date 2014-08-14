@@ -67,6 +67,8 @@ preferredID = "UIEditorTopComponent")
 public final class UIEditorTopComponent extends TopComponent implements
         ExplorerManager.Provider, PropertyChangeListener
 {    
+    
+    
     public static final String FILE = FileUtil.USER_HOME + File.separator + ".netbeans.ui_editor";
     
     public static final Set<UIProperty> applied = new TreeSet<UIProperty>();
