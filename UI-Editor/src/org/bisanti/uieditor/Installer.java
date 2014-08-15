@@ -4,6 +4,7 @@
  */
 package org.bisanti.uieditor;
 
+import java.io.File;
 import javax.swing.SwingUtilities;
 import org.openide.modules.ModuleInstall;
 
@@ -18,7 +19,7 @@ public class Installer extends ModuleInstall
             @Override
             public void run()
             {
-                UIEditorTopComponent.loadSettings();
+                UIEditorTopComponent.loadSettings(new File(UIEditorTopComponent.FILE));
             }
         });
     }

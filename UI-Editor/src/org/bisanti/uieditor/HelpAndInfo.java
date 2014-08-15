@@ -4,9 +4,11 @@
  */
 package org.bisanti.uieditor;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
+import javax.swing.JTextPane;
 import javax.swing.text.html.HTMLEditorKit;
-import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
@@ -16,9 +18,9 @@ import org.openide.util.NbBundle;
  */
 public class HelpAndInfo extends javax.swing.JFrame
 {    
-    private final String BASE_DIR = "";//"org" + File.separator + "bisanti" + File.separator + "uieditor" + File.separator;
-    
     private static volatile HelpAndInfo instance;
+    
+    private final Map<JTextPane, String> textBundles = new HashMap<JTextPane, String>();
     
     /**
      * Creates new form HelpAndInfo
@@ -28,37 +30,28 @@ public class HelpAndInfo extends javax.swing.JFrame
         super("UI-Editor Help and Information");
         super.setIconImage(ImageUtilities.loadImage("mainIcon.png"));
         initComponents();
-        this.howToTextPane.setEditorKit(new HTMLEditorKit());
-        this.tipsAndTricksTextPane.setEditorKit(new HTMLEditorKit());
-        this.aboutTextPane.setEditorKit(new HTMLEditorKit());
-        this.issuesTextPane.setEditorKit(new HTMLEditorKit());
         
-        try
+        this.textBundles.put(this.howToTextPane, "HelpAndInfo.HowToUse");
+        this.textBundles.put(this.tipsAndTricksTextPane, "HelpAndInfo.TipsAndTricks");
+        this.textBundles.put(this.issuesTextPane, "HelpAndInfo.KnownIssues");
+        this.textBundles.put(this.changesTextPane, "HelpAndInfo.ChangeLog");
+        this.textBundles.put(this.aboutTextPane, "HelpAndInfo.About");
+        
+        ResourceBundle bundle = NbBundle.getBundle(this.getClass());
+        for(Map.Entry<JTextPane, String> entry: this.textBundles.entrySet())
         {
-            ResourceBundle bundle = NbBundle.getBundle(this.getClass());
-            this.howToTextPane.setText(bundle.getString("HelpAndInfo.HowToUse"));
-            this.howToTextPane.setCaretPosition(0);
+            JTextPane tc = entry.getKey();
+            tc.setEditorKit(new HTMLEditorKit());
+            tc.setText(bundle.getString(entry.getValue()));
+            tc.setCaretPosition(0);
+        }           
 
-            this.tipsAndTricksTextPane.setText(bundle.getString("HelpAndInfo.TipsAndTricks"));
-            this.tipsAndTricksTextPane.setCaretPosition(0);
-
-            this.issuesTextPane.setText(bundle.getString("HelpAndInfo.KnownIssues"));
-            this.issuesTextPane.setCaretPosition(0); 
-            
-            this.aboutTextPane.setText(bundle.getString("HelpAndInfo.About"));
-            this.aboutTextPane.setCaretPosition(0);               
-        } 
-        catch (Exception ex)
-        {
-            Exceptions.printStackTrace(ex);
-        }
     }
     
     public static HelpAndInfo getInstance()
     {
         return instance == null ? instance = new HelpAndInfo() : instance;
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -81,6 +74,9 @@ public class HelpAndInfo extends javax.swing.JFrame
         jPanel4 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         issuesTextPane = new javax.swing.JTextPane();
+        jPanel6 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        changesTextPane = new javax.swing.JTextPane();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         aboutTextPane = new javax.swing.JTextPane();
@@ -144,6 +140,21 @@ public class HelpAndInfo extends javax.swing.JFrame
 
         jTabbedPane1.addTab(org.openide.util.NbBundle.getMessage(HelpAndInfo.class, "HelpAndInfo.jPanel4.TabConstraints.tabTitle"), jPanel4); // NOI18N
 
+        jScrollPane3.setViewportView(changesTextPane);
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 562, Short.MAX_VALUE)
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 524, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab(org.openide.util.NbBundle.getMessage(HelpAndInfo.class, "HelpAndInfo.jPanel6.TabConstraints.tabTitle"), jPanel6); // NOI18N
+
         aboutTextPane.setEditable(false);
         jScrollPane1.setViewportView(aboutTextPane);
 
@@ -182,6 +193,7 @@ public class HelpAndInfo extends javax.swing.JFrame
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextPane aboutTextPane;
+    private javax.swing.JTextPane changesTextPane;
     private javax.swing.JScrollPane howToScrollPane;
     private javax.swing.JTextPane howToTextPane;
     private javax.swing.JTextPane issuesTextPane;
@@ -190,8 +202,10 @@ public class HelpAndInfo extends javax.swing.JFrame
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JScrollPane tipsAndTricksScrollPane;
     private javax.swing.JTextPane tipsAndTricksTextPane;

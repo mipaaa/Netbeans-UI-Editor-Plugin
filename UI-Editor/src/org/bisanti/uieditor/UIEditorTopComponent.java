@@ -11,6 +11,7 @@ import java.awt.event.ItemEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,11 +23,13 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import javax.swing.Icon;
+import javax.swing.JFileChooser;
 import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.metal.DefaultMetalTheme;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.plaf.metal.OceanTheme;
@@ -67,9 +70,9 @@ preferredID = "UIEditorTopComponent")
 public final class UIEditorTopComponent extends TopComponent implements
         ExplorerManager.Provider, PropertyChangeListener
 {    
+    public static final String EXT = ".ui_editor";
     
-    
-    public static final String FILE = FileUtil.USER_HOME + File.separator + ".netbeans.ui_editor";
+    public static final String FILE = FileUtil.USER_HOME + File.separator + ".netbeans" + EXT;  
     
     public static final Set<UIProperty> applied = new TreeSet<UIProperty>();
     
@@ -88,7 +91,11 @@ public final class UIEditorTopComponent extends TopComponent implements
     
     private final Set<UIProperty> changed = new TreeSet<UIProperty>();
     
+    private JFileChooser jfc;
+    
     private Object lastLafSelection;
+    
+    private boolean changesApplied;
 
     public UIEditorTopComponent()
     {        
@@ -110,9 +117,8 @@ public final class UIEditorTopComponent extends TopComponent implements
         this.refreshProperties();
     }
     
-    public static void loadSettings()
+    public static void loadSettings(File file)
     {
-        File file = new File(FILE);
         if(file.exists())
         {
             try
@@ -131,6 +137,7 @@ public final class UIEditorTopComponent extends TopComponent implements
     private static boolean apply(Collection<UIProperty> props)
     {
         boolean restartRequired = false;
+        String currentLaf = UIManager.getLookAndFeel().getName();
         
         for(UIProperty prop: props)
         {
@@ -138,8 +145,8 @@ public final class UIEditorTopComponent extends TopComponent implements
             Object newValue = prop.getValue();
             Object oldValue = UIManager.put(name, newValue);
             
-            if(StringUtil.indexOf(false, name.toString(), "font") > -1 && 
-               !Util.equal(oldValue, newValue))
+            if(!restartRequired && !Util.equal(oldValue, newValue) && 
+              (StringUtil.indexOf(false, name.toString(), "font") > -1 || StringUtil.indexOf(false, currentLaf, "nimbus") > -1))
             {
                 restartRequired = true;
             }
@@ -157,6 +164,18 @@ public final class UIEditorTopComponent extends TopComponent implements
         SwingUtilities.updateComponentTreeUI(WindowManager.getDefault().getMainWindow());
         WindowManager.getDefault().getMainWindow().pack();
         WindowManager.getDefault().getMainWindow().repaint();
+    }
+    
+    private JFileChooser getJFC()
+    {
+        if(this.jfc == null)
+        {
+            this.jfc = new JFileChooser();
+            this.jfc.setMultiSelectionEnabled(false);
+            this.jfc.setFileFilter(new UIFileFilter());
+        }
+        
+        return this.jfc;
     }
     
     private Icon convertToSize(String property)
@@ -223,9 +242,16 @@ public final class UIEditorTopComponent extends TopComponent implements
                     MetalLookAndFeel.setCurrentTheme(new OceanTheme());
                 }
             }
+            
+            this.jfc = null;
             UIManager.setLookAndFeel(name);
             repaintUI();
             this.updateLafDescription();
+            
+            if(this.changesApplied)
+            {
+                this.restartNotif();
+            }
         } 
         catch (Exception ex)
         {
@@ -312,6 +338,7 @@ public final class UIEditorTopComponent extends TopComponent implements
         applyPropsButton = new javax.swing.JButton();
         helpButton = new javax.swing.JButton();
         saveAsButton = new javax.swing.JButton();
+        loadButton = new javax.swing.JButton();
 
         org.openide.awt.Mnemonics.setLocalizedText(saveButton, org.openide.util.NbBundle.getMessage(UIEditorTopComponent.class, "UIEditorTopComponent.saveButton.text")); // NOI18N
         saveButton.addActionListener(new java.awt.event.ActionListener()
@@ -447,6 +474,22 @@ public final class UIEditorTopComponent extends TopComponent implements
         });
 
         org.openide.awt.Mnemonics.setLocalizedText(saveAsButton, org.openide.util.NbBundle.getMessage(UIEditorTopComponent.class, "UIEditorTopComponent.saveAsButton.text")); // NOI18N
+        saveAsButton.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                saveAsButtonActionPerformed(evt);
+            }
+        });
+
+        org.openide.awt.Mnemonics.setLocalizedText(loadButton, org.openide.util.NbBundle.getMessage(UIEditorTopComponent.class, "UIEditorTopComponent.loadButton.text")); // NOI18N
+        loadButton.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                loadButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -456,6 +499,8 @@ public final class UIEditorTopComponent extends TopComponent implements
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(loadButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(helpButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(saveAsButton)
@@ -487,7 +532,8 @@ public final class UIEditorTopComponent extends TopComponent implements
                     .addComponent(deleteButton)
                     .addComponent(saveButton)
                     .addComponent(helpButton)
-                    .addComponent(saveAsButton))
+                    .addComponent(saveAsButton)
+                    .addComponent(loadButton))
                 .addGap(28, 28, 28)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -525,23 +571,11 @@ public final class UIEditorTopComponent extends TopComponent implements
     private void applyPropsButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_applyPropsButtonActionPerformed
     {//GEN-HEADEREND:event_applyPropsButtonActionPerformed
         boolean restart = apply(this.changed);
+        this.changesApplied = true;
         this.changed.clear();
         if(restart)
         {
-            NotificationDisplayer.getDefault().notify("UI-Editor: Restart Recommended", 
-                    ImageUtilities.image2Icon(this.getIcon()), 
-                    "One or more Font properties may not be applied correctly until NetBeans is restarted. If necessary, click here to restart.", 
-                    new ActionListener()
-                    {
-                        @Override
-                        public void actionPerformed(ActionEvent e)
-                        {
-                            LifecycleManager lm = LifecycleManager.getDefault();
-                            lm.saveAll();
-                            lm.markForRestart();
-                            lm.exit();
-                        }
-                    });
+            this.restartNotif();
         }
     }//GEN-LAST:event_applyPropsButtonActionPerformed
 
@@ -554,49 +588,7 @@ public final class UIEditorTopComponent extends TopComponent implements
         confirm.setMessageType(DialogDescriptor.WARNING_MESSAGE);
         if(DialogDisplayer.getDefault().notify(confirm) == DialogDescriptor.OK_OPTION)
         {
-            File file = new File(FILE);
-            if(file.exists())
-            {
-                file.delete();
-            }
-            
-            UISettings uis = new UISettings(UIManager.getLookAndFeel().getClass().getCanonicalName(), applied);
-            Set<UIProperty> removed = new TreeSet<UIProperty>();
-
-            if (!FileUtil.isSerializable(applied))
-            {
-                Iterator<UIProperty> it = applied.iterator();
-                while (it.hasNext())
-                {
-                    UIProperty uip = it.next();
-                    if (!FileUtil.isSerializable(uip))
-                    {
-                        removed.add(uip);
-                        it.remove();
-                    }
-                }
-            }            
-            
-            try
-            {
-                file.createNewFile();
-                FileUtil.writeObjects(file, uis);
-                if (!removed.isEmpty())
-                {
-                    DialogDescriptor.Message message = new DialogDescriptor.Message("The following properties are not Serializable and could not be saved:\n\n" + StringUtil.toString(removed, "\n"));
-                    message.setTitle("Not All Properties Saved");
-                    message.setMessageType(DialogDescriptor.WARNING_MESSAGE);
-                    DialogDisplayer.getDefault().notify(message);
-                }
-                this.deleteButton.setEnabled(true);
-            } catch (Exception ex)
-            {
-                DialogDescriptor.Message message = new DialogDescriptor.Message("Unable to save current settings:\n\n" + ex.getMessage());
-                message.setTitle("Error During Save");
-                message.setMessageType(DialogDescriptor.ERROR_MESSAGE);
-                DialogDisplayer.getDefault().notify(message);
-            }
-            
+            this.save(new File(FILE));
         }
     }//GEN-LAST:event_saveButtonActionPerformed
 
@@ -658,6 +650,27 @@ public final class UIEditorTopComponent extends TopComponent implements
         hai.setVisible(true);
     }//GEN-LAST:event_helpButtonActionPerformed
 
+    private void saveAsButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_saveAsButtonActionPerformed
+    {//GEN-HEADEREND:event_saveAsButtonActionPerformed
+        File saveAs = null;
+        if(this.getJFC().showSaveDialog(this) == JFileChooser.APPROVE_OPTION && (saveAs = this.getJFC().getSelectedFile()) != null)
+        {
+            if(!saveAs.getAbsolutePath().trim().endsWith(EXT))
+            {
+                saveAs = new File(saveAs.getAbsolutePath().trim()+EXT);
+            }
+            this.save(saveAs);
+        }
+    }//GEN-LAST:event_saveAsButtonActionPerformed
+
+    private void loadButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_loadButtonActionPerformed
+    {//GEN-HEADEREND:event_loadButtonActionPerformed
+        if(this.getJFC().showOpenDialog(this) == JFileChooser.APPROVE_OPTION && this.getJFC().getSelectedFile() != null)
+        {
+            loadSettings(this.getJFC().getSelectedFile());
+        }
+    }//GEN-LAST:event_loadButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton applyPropsButton;
     private javax.swing.JButton collapseButton;
@@ -670,6 +683,7 @@ public final class UIEditorTopComponent extends TopComponent implements
     private javax.swing.JComboBox lafComboBox;
     private javax.swing.JLabel lafDescription;
     private javax.swing.JPanel lafsPanel;
+    private javax.swing.JButton loadButton;
     private org.openide.explorer.view.OutlineView propTreeTable;
     private javax.swing.JButton resetButton;
     private javax.swing.JButton saveAsButton;
@@ -678,6 +692,7 @@ public final class UIEditorTopComponent extends TopComponent implements
     private javax.swing.JComboBox themeComboBox;
     private javax.swing.JLabel themeLabel;
     // End of variables declaration//GEN-END:variables
+   
     @Override
     public void componentOpened()
     {
@@ -703,6 +718,69 @@ public final class UIEditorTopComponent extends TopComponent implements
         String version = p.getProperty("version");
         // TODO read your settings according to their version
     }
+    
+    private void save(File file)
+    {   
+        UISettings uis = new UISettings(UIManager.getLookAndFeel().getClass().getCanonicalName(), applied);
+        Set<UIProperty> removed = new TreeSet<UIProperty>();
+
+        if (!FileUtil.isSerializable(applied))
+        {
+            Iterator<UIProperty> it = applied.iterator();
+            while (it.hasNext())
+            {
+                UIProperty uip = it.next();
+                if (!FileUtil.isSerializable(uip))
+                {
+                    removed.add(uip);
+                    it.remove();
+                }
+            }
+        }
+
+        try
+        {
+            if (file.exists())
+            {
+                file.delete();
+            }
+            file.createNewFile();
+            FileUtil.writeObjects(file, uis);
+            if (!removed.isEmpty())
+            {
+                DialogDescriptor.Message message = new DialogDescriptor.Message("The following properties are not Serializable and could not be saved:\n\n" + StringUtil.toString(removed, "\n"));
+                message.setTitle("Not All Properties Saved");
+                message.setMessageType(DialogDescriptor.WARNING_MESSAGE);
+                DialogDisplayer.getDefault().notify(message);
+            }
+            this.deleteButton.setEnabled(true);
+        } 
+        catch (Exception ex)
+        {
+            DialogDescriptor.Message message = new DialogDescriptor.Message("Unable to save current settings:\n\n" + ex.getMessage());
+            message.setTitle("Error During Save");
+            message.setMessageType(DialogDescriptor.ERROR_MESSAGE);
+            DialogDisplayer.getDefault().notify(message);
+        }
+    }
+    
+    private void restartNotif()
+    {
+        NotificationDisplayer.getDefault().notify("UI-Editor: Restart Recommended at " + SimpleDateFormat.getTimeInstance().format(System.currentTimeMillis()), 
+                    ImageUtilities.image2Icon(this.getIcon()), 
+                    "One or more properties may not be applied correctly until NetBeans is restarted. If necessary, click here to restart.", 
+                    new ActionListener()
+                    {
+                        @Override
+                        public void actionPerformed(ActionEvent e)
+                        {
+                            LifecycleManager lm = LifecycleManager.getDefault();
+                            lm.saveAll();
+                            lm.markForRestart();
+                            lm.exit();
+                        }
+                    });
+    }
 
     @Override
     public ExplorerManager getExplorerManager()
@@ -724,9 +802,29 @@ public final class UIEditorTopComponent extends TopComponent implements
     public void repaint()
     {
         super.repaint();
+        Icon saveIcon = this.convertToSize("FileView.floppyDriveIcon");
+        this.saveButton.setIcon(saveIcon);
+        this.saveAsButton.setIcon(saveIcon);
         this.helpButton.setIcon(this.convertToSize("OptionPane.questionIcon"));
-        this.saveButton.setIcon(this.convertToSize("FileView.floppyDriveIcon"));
         this.deleteButton.setIcon(this.convertToSize("OptionPane.errorIcon"));
         this.resetButton.setIcon(this.convertToSize("FileView.computerIcon"));
+        this.loadButton.setIcon(this.convertToSize("FileView.fileIcon"));
     }
+    
+    public class UIFileFilter extends FileFilter
+    {
+        @Override
+        public boolean accept(File f)
+        {
+            return f.isDirectory() || f.getName().endsWith(EXT);
+        }
+
+        @Override
+        public String getDescription()
+        {
+            return "*" + EXT;
+        }
+        
+    }
+    
 }
