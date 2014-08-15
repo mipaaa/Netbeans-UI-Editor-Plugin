@@ -768,16 +768,78 @@ public final class UIEditorTopComponent extends TopComponent implements
     {
         NotificationDisplayer.getDefault().notify("UI-Editor: Restart Recommended at " + SimpleDateFormat.getTimeInstance().format(System.currentTimeMillis()), 
                     ImageUtilities.image2Icon(this.getIcon()), 
-                    "One or more properties may not be applied correctly until NetBeans is restarted. If necessary, click here to restart.", 
+                    "One or more properties may not have been applied. Click here for more information.", 
                     new ActionListener()
                     {
                         @Override
                         public void actionPerformed(ActionEvent e)
                         {
-                            LifecycleManager lm = LifecycleManager.getDefault();
-                            lm.saveAll();
-                            lm.markForRestart();
-                            lm.exit();
+                            final String restart = "Save as Default Settings and Restart";
+                            DialogDescriptor restartDialog = new DialogDescriptor(
+                                    "One or more properties may not have been applied correctly. These typically include Font related properties and Nimbus " +
+                                    "Look and Feel related properties.\n\nIf the applied changes do not appear to have taken effect, click the '" + restart +
+                                    "' button to save your current default settings and restart NetBeans.\n\nIf you have current defaults saved, you will " +
+                                    "be given the chance to save them with a different name", "UI-Editor: Restart Recommended");
+                            
+                            restartDialog.setMessageType(DialogDescriptor.INFORMATION_MESSAGE);
+                            restartDialog.setOptions(new Object[]{restart, DialogDescriptor.CANCEL_OPTION});
+                            
+                            if(DialogDisplayer.getDefault().notify(restartDialog).equals(restart))
+                            {
+                                File defaults = new File(FILE);
+                                if(defaults.exists())
+                                {
+                                    DialogDescriptor saveOff = new DialogDescriptor("You currently have default settings saved. Would you like to save these under a different file name so you can revert to them later?", "UI-Editor: Rename Current Settings");
+                                    if(DialogDisplayer.getDefault().notify(saveOff).equals(DialogDescriptor.OK_OPTION))
+                                    {
+                                        File newFile = null;
+                                        boolean saved = false;
+                                        while(!saved)
+                                        {
+                                            if(getJFC().showSaveDialog(UIEditorTopComponent.this) == JFileChooser.APPROVE_OPTION && (newFile = getJFC().getSelectedFile()) != null)
+                                            {
+                                                try
+                                                {
+                                                    saved = true;
+                                                    if(!newFile.getAbsolutePath().endsWith(EXT))
+                                                    {
+                                                        newFile = new File(newFile.getAbsolutePath().trim() + EXT);
+                                                    }
+                                                    if(newFile.exists())
+                                                    {
+                                                        newFile.delete();
+                                                    }
+                                                    newFile.createNewFile();
+                                                    FileUtil.writeObjects(newFile, FileUtil.readObjects(defaults, UISettings.class).get(0));                                                
+                                                } 
+                                                catch (Exception ex)
+                                                {
+                                                    Exceptions.printStackTrace(ex);
+                                                }
+                                            }
+                                            
+                                            if(!saved)
+                                            {
+                                                String no = "No, I WANT to save my defaults!";
+                                                String yes = "Yes, I DO NOT WANT to save my defaults!";
+                                                DialogDescriptor confirm = new DialogDescriptor("You did not save your defaults. Are you sure you do not want to save them?", "Defaults Not Saved");
+                                                confirm.setMessageType(DialogDescriptor.WARNING_MESSAGE);
+                                                confirm.setOptions(new Object[]{no, yes});
+                                                if(DialogDisplayer.getDefault().notify(confirm).equals(yes))
+                                                {
+                                                    saved = true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                
+                                save(new File(FILE));
+                                LifecycleManager lm = LifecycleManager.getDefault();
+                                lm.saveAll();
+                                lm.markForRestart();
+                                lm.exit();
+                            }
                         }
                     });
     }
